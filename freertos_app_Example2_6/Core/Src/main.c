@@ -431,7 +431,7 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(0xffffffff);
   }
   /* USER CODE END 5 */
 }
