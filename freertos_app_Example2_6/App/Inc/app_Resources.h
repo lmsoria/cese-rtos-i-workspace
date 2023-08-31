@@ -55,10 +55,11 @@
 
 // ------ typedef ------------------------------------------------------
 
-
+ /// @brief Struct containing information relevant for the tasks. For the moment
+ /// it only holds the LED assigned to each task, but we can add more fields in the future.
  typedef struct
  {
-	 BoardLEDs led;
+    BoardLEDs led; ///< LED assigned to the task.
  } TaskData;
 
 
