@@ -50,6 +50,7 @@
 /* Project includes. */
 #include "main.h"
 #include "cmsis_os.h"
+#include "API_leds.h"
 
 /* Standard includes. */
 #include <stdio.h>
@@ -105,10 +106,13 @@ void vTaskFunction( void *pvParameters )
 	static char cStringBuffer[ 512 ];
 
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
-	uint32_t index = (uint32_t) pvParameters;
+	TaskData* const DATA = (TaskData*)(pvParameters);
+
+	// Let's assume we won't change the target LED during program execution.
+	const BoardLEDs LED = DATA->led;
 
 	ledFlag_t ledFlag = NotBlinking;
-	GPIO_PinState ledState = GPIO_PIN_RESET;
+	LEDStatus ledState = LED_OFF;
 	TickType_t ledTickCnt = xTaskGetTickCount();
 
 	TickType_t buttonTickCnt = xTaskGetTickCount();
@@ -155,18 +159,18 @@ void vTaskFunction( void *pvParameters )
 			if( ( xTaskGetTickCount() - ledTickCnt ) >= ledTickCntMAX )
 			{
 				/* Check, Update and Print Led State */
-		    	if( ledState == GPIO_PIN_RESET )
+		    	if( ledState == LED_OFF )
 		    	{
-		    		ledState = GPIO_PIN_SET;
+		    		ledState = LED_ON;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
 		    	}
 		    	else
 		    	{
-		    		ledState = GPIO_PIN_RESET;
+		    		ledState = LED_OFF;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
 		    	}
 				/* Update HW Led State */
-		    	HAL_GPIO_WritePin( LDX_GPIO_Port[ index ], LDX_Pin[ index ], ledState );
+		    	led_write(LED, ledState);
 
 				/* Update and Led Tick Counter */
 				ledTickCnt = xTaskGetTickCount();

@@ -62,6 +62,7 @@
 
 /* Application & Tasks includes. */
 #include "app.h"
+#include "app_Resources.h"
 #include "task_Function.h"
 
 // ------ Macros and definitions ---------------------------------------
@@ -71,6 +72,14 @@
 TaskHandle_t xTask1Handle;
 TaskHandle_t xTask2Handle;
 TaskHandle_t xTask3Handle;
+
+// Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
+static const TaskData TASK_DATA[3] =
+{
+	[0] = { .led = LED1 },
+	[1] = { .led = LED2 },
+	[2] = { .led = LED3 },
+};
 
 // ------ internal functions declaration -------------------------------
 
@@ -99,7 +108,7 @@ void appInit( void )
 	ret = xTaskCreate( vTaskFunction,				/* Pointer to the function thats implement the task. */
 					   "Task 1",					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-	                   (void*)index,    			/* Pass the index as the task parameter. */
+	                   (void*)(&TASK_DATA[index]),    	/* Pass the index as the task parameter. */
 					   (tskIDLE_PRIORITY + 1UL),	/* This task will run at priority 1. 		*/
 					   &xTask1Handle );				/* We are using a variable as task handle.	*/
 
@@ -111,7 +120,7 @@ void appInit( void )
 	ret = xTaskCreate( vTaskFunction,				/* Pointer to the function thats implement the task. */
 					   "Task 2",					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-	                   (void*)index,    			/* Pass the index as the task parameter. */
+					   (void*)(&TASK_DATA[index]),    			/* Pass the index as the task parameter. */
 					   (tskIDLE_PRIORITY + 1UL),	/* This task will run at priority 1. 		*/
 					   &xTask2Handle );				/* We are using a variable as task handle.	*/
 
@@ -123,7 +132,7 @@ void appInit( void )
 	ret = xTaskCreate( vTaskFunction,				/* Pointer to the function thats implement the task. */
 					   "Task 3",					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-	                   (void*)index,    			/* Pass the index as the task parameter. */
+					   (void*)(&TASK_DATA[index]),    	/* Pass the index as the task parameter. */
 					   (tskIDLE_PRIORITY + 1UL),	/* This task will run at priority 1. 		*/
 					   &xTask3Handle );				/* We are using a variable as task handle.	*/
 
