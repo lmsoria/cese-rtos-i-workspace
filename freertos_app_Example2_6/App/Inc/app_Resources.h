@@ -50,10 +50,17 @@
 #endif
 
 // ------ inclusions ---------------------------------------------------
-
+#include "API_leds.h"
 // ------ macros -------------------------------------------------------
 
 // ------ typedef ------------------------------------------------------
+
+
+ typedef struct
+ {
+	 BoardLEDs led;
+ } TaskData;
+
 
 // ------ external data declaration ------------------------------------
 /* Used to hold the handle of TaskTest. */
