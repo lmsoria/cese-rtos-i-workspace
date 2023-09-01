@@ -100,11 +100,6 @@ GPIO_TypeDef* LDX_GPIO_Port[]	= { LD1_GPIO_Port, LD2_GPIO_Port, LD3_GPIO_Port };
 /* Task Function thread */
 void vTaskFunction( void *pvParameters )
 {
-	/* The buffer used to hold the run time stats text needs to be quite large.  It
-	   is therefore declared static to ensure it is not allocated on the task stack.
-	   This makes this function non re-entrant. */
-	static char cStringBuffer[ 512 ];
-
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
 	TaskData* const DATA = (TaskData*)(pvParameters);
 
@@ -125,11 +120,6 @@ void vTaskFunction( void *pvParameters )
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
-		/* Generate a text table from the run time stats.  This must fit into
-		the cStringBuffer array.
-		https://www.freertos.org/a00021.html#vTaskGetRunTimeStats */
-		vTaskGetRunTimeStats( cStringBuffer );
-
 		/* Check HW Button State */
 		if( HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin ) == GPIO_PIN_SET )
 		{
