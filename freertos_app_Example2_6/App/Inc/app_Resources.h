@@ -50,6 +50,7 @@
 #endif
 
 // ------ inclusions ---------------------------------------------------
+#include "API_button.h"
 #include "API_leds.h"
 // ------ macros -------------------------------------------------------
 
@@ -59,7 +60,8 @@
  /// it only holds the LED assigned to each task, but we can add more fields in the future.
  typedef struct
  {
-    BoardLEDs led; ///< LED assigned to the task.
+    BoardLEDs led;       ///< LED assigned to the task.
+    BoardButtons button; ///< Button assigned to the task.
  } TaskData;
 
 

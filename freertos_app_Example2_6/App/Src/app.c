@@ -76,9 +76,18 @@ TaskHandle_t xTask3Handle;
 // Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
 static const TaskData TASK_DATA_ARRAY[3] =
 {
-    [0] = { .led = LED1 },
-    [1] = { .led = LED2 },
-    [2] = { .led = LED3 },
+    [0] = {
+    		.led = LED1,
+            .button = USER_BUTTON,
+          },
+    [1] = {
+    		.led = LED2,
+            .button = USER_BUTTON,
+           },
+    [2] = {
+    		.led = LED3,
+            .button = USER_BUTTON,
+           },
 };
 
 // ------ internal functions declaration -------------------------------

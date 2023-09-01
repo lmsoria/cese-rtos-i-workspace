@@ -50,6 +50,7 @@
 /* Project includes. */
 #include "main.h"
 #include "cmsis_os.h"
+#include "API_button.h"
 #include "API_leds.h"
 
 /* Standard includes. */
@@ -103,8 +104,9 @@ void vTaskFunction( void *pvParameters )
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
 	TaskData* const DATA = (TaskData*)(pvParameters);
 
-	// Let's assume we won't change the target LED during program execution.
+	// Let's assume we won't change the target LED nor the button during program execution.
 	const BoardLEDs LED = DATA->led;
+	const BoardButtons BUTTON = DATA->button;
 
 	ledFlag_t ledFlag = NotBlinking;
 	LEDStatus ledState = LED_OFF;
@@ -121,7 +123,7 @@ void vTaskFunction( void *pvParameters )
 	for( ;; )
 	{
 		/* Check HW Button State */
-		if( HAL_GPIO_ReadPin( USER_Btn_GPIO_Port, USER_Btn_Pin ) == GPIO_PIN_SET )
+		if( button_read(BUTTON) == BUTTON_PRESSED)
 		{
 			/* Delay for a period using Tick Count */
 			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
