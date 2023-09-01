@@ -48,7 +48,6 @@
 
 // ------ Includes -------------------------------------------------
 /* Project includes. */
-#include "main.h"
 #include "cmsis_os.h"
 #include "API_button.h"
 #include "API_leds.h"
@@ -88,8 +87,6 @@ const char *pcTextForTask_BlinkingOff	= " - Blinking turn Off\r\n";
 #define			ledTickCntMAX		500
 typedef enum	ledFlag_e{ Blinking, NotBlinking } ledFlag_t;
 
-uint16_t	  LDX_Pin[]			= { LD1_Pin,       LD2_Pin,       LD3_Pin };
-GPIO_TypeDef* LDX_GPIO_Port[]	= { LD1_GPIO_Port, LD2_GPIO_Port, LD3_GPIO_Port };
 
 // ------ external data definition -------------------------------------
 
@@ -123,7 +120,7 @@ void vTaskFunction( void *pvParameters )
 	for( ;; )
 	{
 		/* Check HW Button State */
-		if( button_read(BUTTON) == BUTTON_PRESSED)
+		if( button_read(BUTTON) == BUTTON_PRESSED )
 		{
 			/* Delay for a period using Tick Count */
 			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )

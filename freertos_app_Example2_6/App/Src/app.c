@@ -48,7 +48,6 @@
 
 // ------ Includes -----------------------------------------------------
 /* Project includes. */
-#include "main.h"
 #include "cmsis_os.h"
 
 /* Standard includes. */
