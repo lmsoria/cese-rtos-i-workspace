@@ -92,6 +92,7 @@ static const TaskData TASK_DATA_ARRAY[4] =
 		    .led = LED_D4,
 		    .button = BUTTON_S4,
 		  },
+
 };
 
 // ------ internal functions declaration -------------------------------
@@ -117,13 +118,22 @@ void appInit( void )
     vPrintString( pcTextForMain );
 
     index = 0;
-    /* Task 1 thread at priority 1 */
-    ret = xTaskCreate( vTaskFunction,                    /* Pointer to the function thats implement the task. */
-                       "Task 1",                         /* Text name for the task. This is to facilitate debugging only. */
+
+
+    ret = xTaskCreate( vTaskHelloWorld,                    /* Pointer to the function thats implement the task. */
+                       "HelloWorld",                         /* Text name for the task. This is to facilitate debugging only. */
                        (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
-                       (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
+                       NULL, /* Pass the index as the task parameter. */
                        (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
                        &xTask1Handle );                  /* We are using a variable as task handle. */
+
+    /* Task 1 thread at priority 1 */
+//    ret = xTaskCreate( vTaskFunction,                    /* Pointer to the function thats implement the task. */
+//                       "Task 1",                         /* Text name for the task. This is to facilitate debugging only. */
+//                       (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
+//                       (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
+//                       (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
+//                       &xTask1Handle );                  /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
