@@ -63,6 +63,7 @@
 extern TaskHandle_t xTask1Handle;
 extern TaskHandle_t xTask2Handle;
 extern TaskHandle_t xTask3Handle;
+extern TaskHandle_t xTask4Handle;
 
 // ------ external functions declaration -------------------------------
 

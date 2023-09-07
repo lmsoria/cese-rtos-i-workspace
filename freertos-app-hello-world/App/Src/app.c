@@ -71,22 +71,27 @@
 TaskHandle_t xTask1Handle;
 TaskHandle_t xTask2Handle;
 TaskHandle_t xTask3Handle;
+TaskHandle_t xTask4Handle;
 
 // Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
-static const TaskData TASK_DATA_ARRAY[3] =
+static const TaskData TASK_DATA_ARRAY[4] =
 {
     [0] = {
     		.led = LED_D1,
             .button = BUTTON_S1,
           },
     [1] = {
-    		.led = LED2,
-            .button = USER_BUTTON,
+    		.led = LED_D2,
+            .button = BUTTON_S2,
            },
     [2] = {
-    		.led = LED3,
-            .button = USER_BUTTON,
+    		.led = LED_D3,
+            .button = BUTTON_S3,
            },
+	[3] = {
+		    .led = LED_D4,
+		    .button = BUTTON_S4,
+		  },
 };
 
 // ------ internal functions declaration -------------------------------
@@ -143,6 +148,18 @@ void appInit( void )
                        (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
                        (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
                        &xTask3Handle );                  /* We are using a variable as task handle. */
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+    index = 3;
+    /* Task 3 thread at priority 1 */
+    ret = xTaskCreate( vTaskFunction,                    /* Pointer to the function thats implement the task. */
+                       "Task 4",                         /* Text name for the task. This is to facilitate debugging only. */
+                       (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
+                       (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
+                       (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
+                       &xTask4Handle );                  /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
