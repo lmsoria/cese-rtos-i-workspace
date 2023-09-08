@@ -69,7 +69,12 @@
 // ------ external functions declaration -------------------------------
 
 void vTaskFunction( void *pvParameters );
-void vTaskHelloWorld( void *pvParameters );
+void vTaskHelloWorldNaive( void *pvParameters );
+void vTaskHelloWorldDelay( void *pvParameters );
+
+// Ejercicio C2: Generar una señal cuadrada de 1s de periodo, pero que el tiempo de encendido
+// de crezca de 100 a 900ms en pasos de 100 ms (de forma ciclica). Apoyarse en vTaskDelayUntil
+void vTaskEjercicioC2( void *pvParameters );
 
 #ifdef __cplusplus
 }
