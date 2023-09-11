@@ -12,6 +12,24 @@
 #define LED_PERIOD_MS 1000
 #define LED_ON_TIME_INCREMENT_MS 100
 
+#define DEBOUNCE_PERIOD_MS 40
+
+typedef enum
+{
+	KEY_STATE_WAIT_PRESS = 0,    ///< Key released, waiting to be pressed
+	KEY_STATE_DEBOUNCE_ACTIVE,   ///< The key has been pressed and we need to filter the debouncing
+	KEY_STATE_WAIT_RELEASE,      ///< Key pressed, waiting to be released
+	KEY_STATE_DEBOUNCE_INACTIVE, ///< The key has been released, so we need to filter the debouncing
+} KeyState;
+
+typedef struct
+{
+	BoardButtons button;
+	KeyState state;
+    uint32_t timer_debounce;
+    uint32_t timer_up;
+} Key;
+
 // Naive approach: use xTaskGetTickCount() and toggle after the comparison is >= the period
 void vTaskHelloWorldNaive( void *pvParameters )
 {
@@ -66,5 +84,71 @@ void vTaskEjercicioC2( void *pvParameters )
     	}
 
     	led_write(LED1, ledState);
+	}
+}
+
+
+void vTaskEjercicioC3_button( void *pvParameters )
+{
+	TaskData* const DATA = (TaskData*)(pvParameters);
+
+	Key key =
+	{
+		.button = DATA->button,
+		.state = KEY_STATE_WAIT_PRESS,
+		.timer_debounce = 0,
+		.timer_up = 0,
+	};
+
+	while(1) {
+
+		switch(key.state) {
+		case KEY_STATE_WAIT_PRESS:
+			if(button_read(key.button) == BUTTON_PRESSED) {
+				key.timer_debounce = pdMS_TO_TICKS(DEBOUNCE_PERIOD_MS);
+				key.state = KEY_STATE_DEBOUNCE_ACTIVE;
+			}
+			break;
+		case KEY_STATE_DEBOUNCE_ACTIVE:
+			if(button_read(key.button) == BUTTON_RELEASED) {
+				key.state = KEY_STATE_WAIT_PRESS;
+			} else if(key.timer_debounce) {
+				key.timer_debounce--;
+			} else {
+				key.timer_up = 0;
+				key.state = KEY_STATE_WAIT_RELEASE;
+			}
+			break;
+		case KEY_STATE_WAIT_RELEASE:
+			if(button_read(key.button) == BUTTON_RELEASED) {
+				key.timer_debounce = pdMS_TO_TICKS(DEBOUNCE_PERIOD_MS);
+				key.state = KEY_STATE_DEBOUNCE_INACTIVE;
+			}
+			break;
+		case KEY_STATE_DEBOUNCE_INACTIVE:
+			if(button_read(key.button) == BUTTON_PRESSED) {
+				key.state = KEY_STATE_WAIT_RELEASE;
+			} else if(key.timer_debounce) {
+				key.timer_debounce--;
+			} else {
+				key.state = KEY_STATE_WAIT_PRESS;
+			}
+			break;
+		default:
+			key.state = KEY_STATE_WAIT_PRESS;
+			break;
+		}
+
+		if(key.state == KEY_STATE_WAIT_RELEASE) {
+			key.timer_up++;
+
+			if((key.timer_up% 100) == 0) {
+				led_toggle(DATA->led);
+			}
+		} else {
+			key.timer_up = 0;
+		}
+
+		vTaskDelay(pdMS_TO_TICKS(1));
 	}
 }

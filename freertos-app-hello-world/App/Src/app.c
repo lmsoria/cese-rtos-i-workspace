@@ -120,10 +120,10 @@ void appInit( void )
     index = 0;
 
 
-    ret = xTaskCreate( vTaskEjercicioC2,                    /* Pointer to the function thats implement the task. */
-                       "HelloWorld",                         /* Text name for the task. This is to facilitate debugging only. */
+    ret = xTaskCreate( vTaskEjercicioC3_button,                    /* Pointer to the function thats implement the task. */
+                       "Task 1",                         /* Text name for the task. This is to facilitate debugging only. */
                        (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
-                       NULL, /* Pass the index as the task parameter. */
+					   (void*)(&TASK_DATA_ARRAY[index]),          /* Pass the index as the task parameter. */
                        (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
                        &xTask1Handle );                  /* We are using a variable as task handle. */
 
@@ -138,14 +138,14 @@ void appInit( void )
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
-//    index = 1;
+    index = 1;
 //    /* Task 2 thread at priority 1 */
-//    ret = xTaskCreate( vTaskFunction,                    /* Pointer to the function thats implement the task. */
-//                       "Task 2",                         /* Text name for the task. This is to facilitate debugging only. */
-//                       (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
-//                       (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
-//                       (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
-//                       &xTask2Handle );                  /* We are using a variable as task handle. */
+    ret = xTaskCreate( vTaskEjercicioC3_button,                    /* Pointer to the function thats implement the task. */
+                       "Task 2",                         /* Text name for the task. This is to facilitate debugging only. */
+                       (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
+                       (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
+                       (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
+                       &xTask2Handle );                  /* We are using a variable as task handle. */
 //
 //    /* Check the task was created successfully. */
 //    configASSERT( ret == pdPASS );

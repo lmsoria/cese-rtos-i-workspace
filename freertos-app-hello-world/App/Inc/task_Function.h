@@ -76,6 +76,12 @@ void vTaskHelloWorldDelay( void *pvParameters );
 // de crezca de 100 a 900ms en pasos de 100 ms (de forma ciclica). Apoyarse en vTaskDelayUntil
 void vTaskEjercicioC2( void *pvParameters );
 
+// Ejercicio C3: Para comprobar el estado de funcionamiento de un pulsador, queremos reproducir
+// el tiempo de pulsacion en un led.
+// Implementando un mecanismo anti-rebote por software, desarrolle un programa que mida el tiempo
+// de pulsacion y que luego lo reproduzca en el led azul
+void vTaskEjercicioC3_button( void *pvParameters );
+
 #ifdef __cplusplus
 }
 #endif
