@@ -4,7 +4,7 @@
  *  Created on: Sep 7, 2023
  *      Author: lsoria
  */
-
+#include <stdio.h>
 #include "cmsis_os.h"
 #include "task_Function.h"
 #include "supporting_Functions.h"
@@ -41,7 +41,6 @@ void vTaskHelloWorldDelay( void *pvParameters )
 void vTaskEjercicioC2( void *pvParameters )
 {
 	uint32_t on_time = LED_ON_TIME_INCREMENT_MS;
-
 	LEDStatus ledState = LED_OFF;
 
 	TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -49,13 +48,13 @@ void vTaskEjercicioC2( void *pvParameters )
 
     	if( ledState == LED_OFF ) {
     		ledState = LED_ON;
-    		printf("[%d] ON. Lets wait %d ms\r\n", (uint32_t)xLastWakeTime, on_time);
+//    		printf("[%ld] ON. Lets wait %ld ms\r\n", (uint32_t)xLastWakeTime, on_time);
     		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(on_time));
 
     	}
     	else {
     		ledState = LED_OFF;
-    		printf("[%d] OFF. Lets wait %d ms\r\n", (uint32_t)xLastWakeTime, LED_PERIOD_MS - on_time);
+//    		printf("[%ld] OFF. Lets wait %ld ms\r\n", (uint32_t)xLastWakeTime, LED_PERIOD_MS - on_time);
     		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(LED_PERIOD_MS - on_time));
 
     		// Compute new on_time
