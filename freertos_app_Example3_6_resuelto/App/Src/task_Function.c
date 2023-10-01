@@ -75,17 +75,13 @@
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_IsRunning 	= " - is running\r\n";
+static const char *pcTextForTask_IsRunning 	= " - is running\r\n";
 
 const char *pcTextForTask_LDXTOn		= " - LDX turn On \r\n";
 const char *pcTextForTask_LDXTOff		= " - LDX turn Off\r\n";
 
-const char *pcTextForTask_BlinkingOn	= " - Blinking turn On \r\n";
-const char *pcTextForTask_BlinkingOff	= " - Blinking turn Off\r\n";
-
-#define 		buttonTickCntMAX	500
 #define			ledTickCntMAX		500
-typedef enum	ledFlag_e{ Blinking, NotBlinking } ledFlag_t;
+
 
 
 // ------ external data definition -------------------------------------
@@ -109,8 +105,6 @@ void vTaskFunction( void *pvParameters )
 	LEDStatus ledState = LED_OFF;
 	TickType_t ledTickCnt = xTaskGetTickCount();
 
-	TickType_t buttonTickCnt = xTaskGetTickCount();
-
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
 	/* Print out the name of this task. */
@@ -119,28 +113,6 @@ void vTaskFunction( void *pvParameters )
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
-		/* Check HW Button State */
-		if( button_read(BUTTON) == BUTTON_PRESSED )
-		{
-			/* Delay for a period using Tick Count */
-			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
-			{
-        		/* Check, Update and Print Led Flag */
-				if( ledFlag == NotBlinking )
-				{
-					ledFlag = Blinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
-				}
-				else
-				{
-					ledFlag = NotBlinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
-				}
-				/* Update and Button Tick Counter */
-        		buttonTickCnt = xTaskGetTickCount();
-			}
-		}
-
 		/* Check Led Flag */
 		if( ledFlag == Blinking )
 		{

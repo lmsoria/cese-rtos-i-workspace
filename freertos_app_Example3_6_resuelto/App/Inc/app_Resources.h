@@ -56,18 +56,26 @@
 
 // ------ typedef ------------------------------------------------------
 
+ typedef enum ledFlag_e
+ {
+	 Blinking,
+	 NotBlinking
+ } ledFlag_t;
+
  /// @brief Struct containing information relevant for the tasks. For the moment
  /// it only holds the LED assigned to each task, but we can add more fields in the future.
  typedef struct
  {
     BoardLEDs led;       ///< LED assigned to the task.
     BoardButtons button; ///< Button assigned to the task.
+    ledFlag_t led_status;
  } TaskData;
 
 
 // ------ external data declaration ------------------------------------
 /* Used to hold the handle of TaskTest. */
 extern TaskHandle_t xTask1Handle;
+extern TaskHandle_t xTaskButton1Handle;
 extern TaskHandle_t xTask2Handle;
 extern TaskHandle_t xTask3Handle;
 
