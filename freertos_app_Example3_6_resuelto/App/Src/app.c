@@ -92,7 +92,7 @@ static const TaskData TASK_DATA_ARRAY[3] =
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
-const char *pcTextForMain = "freertos_app_Example3_6 is running: PO (3 de 6) (Resuelto)\r\n\n";
+const char *pcTextForMain = "freertos_app_Example2_6 is running: PO (2 de 6) (Resuelto)\r\n\n";
 
 // ------ external data definition -------------------------------------
 
