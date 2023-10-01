@@ -77,8 +77,8 @@
  * tasks are executing. */
 static const char *pcTextForTask_IsRunning 	= " - is running\r\n";
 
-const char *pcTextForTask_LDXTOn		= " - LDX turn On \r\n";
-const char *pcTextForTask_LDXTOff		= " - LDX turn Off\r\n";
+static const char *pcTextForTask_LDXTOn		= " - LDX turn On \r\n";
+static const char *pcTextForTask_LDXTOff		= " - LDX turn Off\r\n";
 
 #define			ledTickCntMAX		500
 
@@ -99,44 +99,35 @@ void vTaskFunction( void *pvParameters )
 
 	// Let's assume we won't change the target LED nor the button during program execution.
 	const BoardLEDs LED = DATA->led;
-	const BoardButtons BUTTON = DATA->button;
 
-	ledFlag_t ledFlag = NotBlinking;
 	LEDStatus ledState = LED_OFF;
-	TickType_t ledTickCnt = xTaskGetTickCount();
+
+	TickType_t xLastWakeTime;
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
 	/* Print out the name of this task. */
 	vPrintTwoStrings( pcTaskName, pcTextForTask_IsRunning );
 
+	xLastWakeTime = xTaskGetTickCount();
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
 		/* Check Led Flag */
-		if( ledFlag == Blinking )
-		{
-			/* Delay for a period using Tick Count. */
-			if( ( xTaskGetTickCount() - ledTickCnt ) >= ledTickCntMAX )
-			{
-				/* Check, Update and Print Led State */
-		    	if( ledState == LED_OFF )
-		    	{
-		    		ledState = LED_ON;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
-		    	}
-		    	else
-		    	{
-		    		ledState = LED_OFF;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
-		    	}
-				/* Update HW Led State */
-		    	led_write(LED, ledState);
-
-				/* Update and Led Tick Counter */
-				ledTickCnt = xTaskGetTickCount();
+		if( DATA->led_status == Blinking ) {
+			/* Check, Update and Print Led State */
+			if( ledState == LED_OFF ) {
+				ledState = LED_ON;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
+			} else {
+				ledState = LED_OFF;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
 			}
+			/* Update HW Led State */
+			led_write(LED, ledState);
 		}
+
+		vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(ledTickCntMAX) );
 	}
 }
 
