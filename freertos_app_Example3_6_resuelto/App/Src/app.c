@@ -75,7 +75,7 @@ TaskHandle_t xTask2Handle;
 TaskHandle_t xTask3Handle;
 
 // Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
-static const TaskData TASK_DATA_ARRAY[3] =
+static TaskData TASK_DATA_ARRAY[3] =
 {
     [0] = {
     		.led = LED1,

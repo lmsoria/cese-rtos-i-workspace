@@ -44,12 +44,7 @@ void vTaskButton( void *pvParameters )
 	TaskData* const DATA = (TaskData*)(pvParameters);
 
 	// Let's assume we won't change the target LED nor the button during program execution.
-	const BoardLEDs LED = DATA->led;
 	const BoardButtons BUTTON = DATA->button;
-
-	ledFlag_t ledFlag = NotBlinking;
-	LEDStatus ledState = LED_OFF;
-	TickType_t ledTickCnt = xTaskGetTickCount();
 
 	TickType_t buttonTickCnt = xTaskGetTickCount();
 
@@ -68,14 +63,14 @@ void vTaskButton( void *pvParameters )
 			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
 			{
         		/* Check, Update and Print Led Flag */
-				if( ledFlag == NotBlinking )
+				if( DATA->led_status == NotBlinking )
 				{
-					ledFlag = Blinking;
+					DATA->led_status = Blinking;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
 				}
 				else
 				{
-					ledFlag = NotBlinking;
+					DATA->led_status = NotBlinking;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
 				}
 				/* Update and Button Tick Counter */
