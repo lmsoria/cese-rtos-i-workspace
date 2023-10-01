@@ -37,16 +37,13 @@ static const char *pcTextForTask_IsRunning 	= " - is running\r\n";
 static const char *pcTextForTask_BlinkingOn	= " - Blinking turn On \r\n";
 static const char *pcTextForTask_BlinkingOff	= " - Blinking turn Off\r\n";
 
-
-void vTaskButton( void *pvParameters )
+void vTaskButton(void* pvParameters)
 {
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
 	TaskData* const DATA = (TaskData*)(pvParameters);
 
 	// Let's assume we won't change the target LED nor the button during program execution.
 	const BoardButtons BUTTON = DATA->button;
-
-	TickType_t buttonTickCnt = xTaskGetTickCount();
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
@@ -57,25 +54,17 @@ void vTaskButton( void *pvParameters )
 	for( ;; )
 	{
 		/* Check HW Button State */
-		if( button_read(BUTTON) == BUTTON_PRESSED )
-		{
-			/* Delay for a period using Tick Count */
-			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
-			{
-        		/* Check, Update and Print Led Flag */
-				if( DATA->led_status == NotBlinking )
-				{
-					DATA->led_status = Blinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
-				}
-				else
-				{
-					DATA->led_status = NotBlinking;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
-				}
-				/* Update and Button Tick Counter */
-        		buttonTickCnt = xTaskGetTickCount();
+		if( button_read(BUTTON) == BUTTON_PRESSED )	{
+			/* Check, Update and Print Led Flag */
+			if( DATA->led_status == NotBlinking ) {
+				DATA->led_status = Blinking;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
+			} else {
+				DATA->led_status = NotBlinking;
+				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
 			}
 		}
+
+		vTaskDelay( pdMS_TO_TICKS(buttonTickCntMAX) );
 	}
 }
