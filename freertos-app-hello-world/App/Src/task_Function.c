@@ -106,10 +106,8 @@ void vTaskFunction( void *pvParameters )
 	const BoardButtons BUTTON = DATA->button;
 
 	ledFlag_t ledFlag = NotBlinking;
-	LEDStatus ledState = LED_OFF;
-	TickType_t ledTickCnt = xTaskGetTickCount();
+	uint32_t button_held = 0;
 
-	TickType_t buttonTickCnt = xTaskGetTickCount();
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
@@ -117,53 +115,38 @@ void vTaskFunction( void *pvParameters )
 	vPrintTwoStrings( pcTaskName, pcTextForTask_IsRunning );
 
 	/* As per most tasks, this task is implemented in an infinite loop. */
+	TickType_t xLastWakeTime = xTaskGetTickCount();
 	for( ;; )
 	{
 		/* Check HW Button State */
-		if( button_read(BUTTON) == BUTTON_PRESSED )
-		{
+		if( button_read(BUTTON) == BUTTON_PRESSED) {
 			/* Delay for a period using Tick Count */
-			if( ( xTaskGetTickCount() - buttonTickCnt ) >= buttonTickCntMAX )
-			{
+
+			if(!button_held) {
+				button_held = 1;
+				vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(buttonTickCntMAX));
+			} else {
         		/* Check, Update and Print Led Flag */
-				if( ledFlag == NotBlinking )
-				{
+				if( ledFlag == NotBlinking ) {
 					ledFlag = Blinking;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
-				}
-				else
-				{
+				} else {
 					ledFlag = NotBlinking;
                 	vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
 				}
-				/* Update and Button Tick Counter */
-        		buttonTickCnt = xTaskGetTickCount();
+				button_held = 1;
 			}
+		} else {
+			button_held = 0;
+			vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(buttonTickCntMAX));
 		}
 
 		/* Check Led Flag */
 		if( ledFlag == Blinking )
 		{
 			/* Delay for a period using Tick Count. */
-			if( ( xTaskGetTickCount() - ledTickCnt ) >= ledTickCntMAX )
-			{
-				/* Check, Update and Print Led State */
-		    	if( ledState == LED_OFF )
-		    	{
-		    		ledState = LED_ON;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOn );
-		    	}
-		    	else
-		    	{
-		    		ledState = LED_OFF;
-                	vPrintTwoStrings( pcTaskName, pcTextForTask_LDXTOff );
-		    	}
-				/* Update HW Led State */
-		    	led_write(LED, ledState);
-
-				/* Update and Led Tick Counter */
-				ledTickCnt = xTaskGetTickCount();
-			}
+			led_toggle(LED);
+			vTaskDelay(ledTickCntMAX);
 		}
 	}
 }
