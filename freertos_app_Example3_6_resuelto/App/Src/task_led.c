@@ -57,13 +57,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <task_led.h>
 
 /* Demo includes. */
 #include "supporting_Functions.h"
 
 /* Application includes. */
 #include "app_Resources.h"
-#include "task_Function.h"
 
 // ------ Macros and definitions ---------------------------------------
 
