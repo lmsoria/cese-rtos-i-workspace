@@ -69,10 +69,14 @@
 
 // ------ internal data declaration ------------------------------------
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
-TaskHandle_t xTask1Handle;
+TaskHandle_t xTaskLed1Handle;
 TaskHandle_t xTaskButton1Handle;
-TaskHandle_t xTask2Handle;
-TaskHandle_t xTask3Handle;
+
+TaskHandle_t xTaskLed2Handle;
+TaskHandle_t xTaskButton2Handle;
+
+TaskHandle_t xTaskLed3Handle;
+TaskHandle_t xTaskButton3Handle;
 
 // Data passed to future tasks. TODO: List available tasks inside an enum so we don't hardcode the indices
 static TaskData TASK_DATA_ARRAY[3] =
@@ -123,7 +127,7 @@ void appInit( void )
                        (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
                        (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
                        (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */
-                       &xTask1Handle );                  /* We are using a variable as task handle. */
+                       &xTaskLed1Handle );                  /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );

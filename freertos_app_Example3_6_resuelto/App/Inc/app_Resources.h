@@ -74,10 +74,14 @@
 
 // ------ external data declaration ------------------------------------
 /* Used to hold the handle of TaskTest. */
-extern TaskHandle_t xTask1Handle;
-extern TaskHandle_t xTaskButton1Handle;
-extern TaskHandle_t xTask2Handle;
-extern TaskHandle_t xTask3Handle;
+ extern TaskHandle_t xTaskLed1Handle;
+ extern TaskHandle_t xTaskButton1Handle;
+
+ extern TaskHandle_t xTaskLed2Handle;
+ extern TaskHandle_t xTaskButton2Handle;
+
+ extern TaskHandle_t xTaskLed3Handle;
+ extern TaskHandle_t xTaskButton3Handle;
 
 // ------ external functions declaration -------------------------------
 
