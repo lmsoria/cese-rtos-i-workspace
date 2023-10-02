@@ -100,7 +100,7 @@ void vTaskLed( void *pvParameters )
 	// Let's assume we won't change the target LED nor the button during program execution.
 	const BoardLEDs LED = DATA->led;
 
-	LEDStatus ledState = DATA->initial_state;
+	LEDStatus ledState = LED_OFF;
 
 	TickType_t xLastWakeTime;
 
