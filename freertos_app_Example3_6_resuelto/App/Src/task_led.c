@@ -100,7 +100,7 @@ void vTaskLed( void *pvParameters )
 	// Let's assume we won't change the target LED nor the button during program execution.
 	const BoardLEDs LED = DATA->led;
 
-	LEDStatus ledState = LED_OFF;
+	LEDStatus ledState = DATA->initial_state;
 
 	TickType_t xLastWakeTime;
 
@@ -114,7 +114,7 @@ void vTaskLed( void *pvParameters )
 	for( ;; )
 	{
 		/* Check Led Flag */
-		if( DATA->led_status == BLINKING ) {
+		if( DATA->blinking_status == BLINKING ) {
 			/* Check, Update and Print Led State */
 			if( ledState == LED_OFF ) {
 				ledState = LED_ON;
@@ -127,7 +127,7 @@ void vTaskLed( void *pvParameters )
 			led_write(LED, ledState);
 		}
 
-		vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(ledTickCntMAX) );
+		vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(DATA->blinking_period_ms) );
 	}
 }
 
