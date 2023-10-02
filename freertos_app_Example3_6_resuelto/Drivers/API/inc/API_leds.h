@@ -13,6 +13,10 @@ typedef enum
     LED1 = 0,  ///< Green LED
     LED2,      ///< Blue LED
     LED3,      ///< Red LED
+	LED_D1,    ///< Breakout led D1 (connected to PE.14)
+	LED_D2,    ///< Breakout led D2 (connected to PE.15)
+	LED_D3,    ///< Breakout led D3 (connected to PB.10)
+	LED_D4,    ///< Breakout led D4 (connected to PB.11)
     LEDS_TOTAL /// Total amount of LEDs. Keep this value always at the bottom!
 } BoardLEDs;
 
