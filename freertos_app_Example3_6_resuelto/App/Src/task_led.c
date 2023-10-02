@@ -114,7 +114,7 @@ void vTaskLed( void *pvParameters )
 	for( ;; )
 	{
 		/* Check Led Flag */
-		if( DATA->led_status == Blinking ) {
+		if( DATA->led_status == BLINKING ) {
 			/* Check, Update and Print Led State */
 			if( ledState == LED_OFF ) {
 				ledState = LED_ON;

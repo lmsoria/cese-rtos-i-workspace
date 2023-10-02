@@ -80,17 +80,17 @@ static TaskData TASK_DATA_ARRAY[3] =
     [0] = {
     		.led = LED1,
             .button = USER_BUTTON,
-			.led_status = NotBlinking,
+			.led_status = NOT_BLINKING,
           },
     [1] = {
     		.led = LED2,
             .button = USER_BUTTON,
-			.led_status = NotBlinking,
+			.led_status = NOT_BLINKING,
            },
     [2] = {
     		.led = LED3,
             .button = USER_BUTTON,
-			.led_status = NotBlinking,
+			.led_status = NOT_BLINKING,
            },
 };
 

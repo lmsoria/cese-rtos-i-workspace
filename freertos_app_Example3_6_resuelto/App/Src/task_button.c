@@ -56,11 +56,11 @@ void vTaskButton(void* pvParameters)
 		/* Check HW Button State */
 		if( button_read(BUTTON) == BUTTON_PRESSED )	{
 			/* Check, Update and Print Led Flag */
-			if( DATA->led_status == NotBlinking ) {
-				DATA->led_status = Blinking;
+			if( DATA->led_status == NOT_BLINKING ) {
+				DATA->led_status = BLINKING;
 				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
 			} else {
-				DATA->led_status = NotBlinking;
+				DATA->led_status = NOT_BLINKING;
 				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
 			}
 		}

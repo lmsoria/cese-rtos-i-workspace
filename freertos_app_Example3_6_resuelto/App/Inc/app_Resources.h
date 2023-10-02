@@ -58,8 +58,8 @@
 
  typedef enum ledFlag_e
  {
-	 Blinking,
-	 NotBlinking
+	 BLINKING,
+	 NOT_BLINKING
  } ledFlag_t;
 
  /// @brief Struct containing information relevant for the tasks. For the moment
