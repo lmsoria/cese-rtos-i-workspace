@@ -118,8 +118,8 @@ void appInit( void )
 
     index = 0;
     /* Task 1 thread at priority 1 */
-    ret = xTaskCreate( vTaskFunction,                    /* Pointer to the function thats implement the task. */
-                       "Task 1",                         /* Text name for the task. This is to facilitate debugging only. */
+    ret = xTaskCreate( vTaskLed,                    /* Pointer to the function thats implement the task. */
+                       "TaskLed 1",                         /* Text name for the task. This is to facilitate debugging only. */
                        (2 * configMINIMAL_STACK_SIZE),   /* Stack depth in words. */
                        (void*)(&TASK_DATA_ARRAY[index]), /* Pass the index as the task parameter. */
                        (tskIDLE_PRIORITY + 1UL),         /* This task will run at priority 1. */

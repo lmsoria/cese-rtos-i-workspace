@@ -92,7 +92,7 @@ static const char *pcTextForTask_LDXTOff		= " - LDX turn Off\r\n";
 
 /*------------------------------------------------------------------*/
 /* Task Function thread */
-void vTaskFunction( void *pvParameters )
+void vTaskLed( void *pvParameters )
 {
 	/*  Declare & Initialize Task Function variables for argument, led, button and task */
 	TaskData* const DATA = (TaskData*)(pvParameters);
