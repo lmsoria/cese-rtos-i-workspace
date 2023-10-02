@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "supporting_Functions.h"
 #include "app.h"
+#include "API_leds.h"
 
 /* USER CODE END Includes */
 
@@ -462,7 +463,8 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(0xffffffff);
+	  led_toggle(LED1);
+	  vTaskDelay(pdMS_TO_TICKS(1000));
   }
   /* USER CODE END 5 */
 }

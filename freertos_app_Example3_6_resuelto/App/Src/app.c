@@ -82,20 +82,20 @@ TaskHandle_t xTaskButton3Handle;
 static TaskData TASK_DATA_ARRAY[3] =
 {
     [0] = {
-    		.led = LED1,
-            .button = USER_BUTTON,
+    		.led = LED_D1,
+            .button = BUTTON_S1,
 			.blinking_period_ms = 250,
 			.blinking_status = NOT_BLINKING,
           },
     [1] = {
-    		.led = LED2,
-            .button = USER_BUTTON,
+    		.led = LED_D2,
+            .button = BUTTON_S2,
 			.blinking_period_ms = 500,
 			.blinking_status = NOT_BLINKING,
            },
     [2] = {
-    		.led = LED3,
-            .button = USER_BUTTON,
+    		.led = LED_D3,
+            .button = BUTTON_S3,
 			.blinking_period_ms = 1000,
 			.blinking_status = NOT_BLINKING,
            },
