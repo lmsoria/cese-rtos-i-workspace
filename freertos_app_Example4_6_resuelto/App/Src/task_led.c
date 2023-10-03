@@ -101,6 +101,7 @@ void vTaskLed( void *pvParameters )
 	const BoardLEDs LED = DATA->led;
 
 	LEDStatus ledState = LED_OFF;
+	ledFlag_t blinking_status;
 
 	TickType_t xLastWakeTime;
 
@@ -114,7 +115,7 @@ void vTaskLed( void *pvParameters )
 	for( ;; )
 	{
 		/* Check Led Flag */
-		if( DATA->blinking_status == BLINKING ) {
+		if( blinking_status == BLINKING ) {
 			/* Check, Update and Print Led State */
 			if( ledState == LED_OFF ) {
 				ledState = LED_ON;
@@ -129,7 +130,7 @@ void vTaskLed( void *pvParameters )
 
 		/* Check Queue Messages */
 		if( uxQueueMessagesWaiting( QueueHandle ) != 0 ) {
-			xQueueReceive( QueueHandle, &DATA->blinking_status, 0 );
+			xQueueReceive( QueueHandle, &blinking_status, 0 );
 		}
 
 		vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(DATA->blinking_period_ms) );

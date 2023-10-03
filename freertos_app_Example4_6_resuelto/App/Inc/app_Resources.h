@@ -69,7 +69,6 @@
     BoardLEDs led;       ///< LED assigned to the task.
     BoardButtons button; ///< Button assigned to the task.
     uint32_t blinking_period_ms;
-    ledFlag_t blinking_status;
  } TaskData;
 
 
