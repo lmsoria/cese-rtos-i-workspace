@@ -127,6 +127,11 @@ void vTaskLed( void *pvParameters )
 			led_write(LED, ledState);
 		}
 
+		/* Check Queue Messages */
+		if( uxQueueMessagesWaiting( QueueHandle ) != 0 ) {
+			xQueueReceive( QueueHandle, &DATA->blinking_status, 0 );
+		}
+
 		vTaskDelayUntil( &xLastWakeTime, pdMS_TO_TICKS(DATA->blinking_period_ms) );
 	}
 }
