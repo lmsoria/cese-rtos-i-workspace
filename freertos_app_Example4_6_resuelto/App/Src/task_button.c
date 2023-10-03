@@ -47,7 +47,11 @@ void vTaskButton(void* pvParameters)
 
 	char *pcTaskName = (char *) pcTaskGetName( NULL );
 
-	ledFlag_t led_status = NOT_BLINKING;
+	TaskMessage msg =
+	{
+		.dest = DATA->led,
+		.blinking_status = NOT_BLINKING
+	};
 
 	/* Print out the name of this task. */
 	vPrintTwoStrings( pcTaskName, pcTextForTask_IsRunning );
@@ -58,15 +62,15 @@ void vTaskButton(void* pvParameters)
 		/* Check HW Button State */
 		if( button_read(BUTTON) == BUTTON_PRESSED )	{
 			/* Check, Update and Print Led Flag */
-			if( led_status == NOT_BLINKING ) {
-				led_status = BLINKING;
+			if( msg.blinking_status == NOT_BLINKING ) {
+				msg.blinking_status = BLINKING;
 				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOn );
 			} else {
-				led_status = NOT_BLINKING;
+				msg.blinking_status = NOT_BLINKING;
 				vPrintTwoStrings( pcTaskName, pcTextForTask_BlinkingOff );
 			}
 
-			xQueueSend(QueueHandle, &led_status, portMAX_DELAY);
+			xQueueSend(QueueHandle, &msg, portMAX_DELAY);
 		}
 
 		vTaskDelay( pdMS_TO_TICKS(buttonTickCntMAX) );

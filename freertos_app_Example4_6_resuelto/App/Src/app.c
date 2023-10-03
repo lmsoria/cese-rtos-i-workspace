@@ -124,7 +124,7 @@ void appInit( void )
 
     /* Before a queue is used it must be explicitly created.
      * The queue is created to hold a maximum of 5 long values. */
-	QueueHandle = xQueueCreate( 5, sizeof( ledFlag_t ) );
+	QueueHandle = xQueueCreate( 5, sizeof( TaskMessage ) );
 	/* Check the queues was created successfully */
 	configASSERT( QueueHandle != NULL );
     /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
