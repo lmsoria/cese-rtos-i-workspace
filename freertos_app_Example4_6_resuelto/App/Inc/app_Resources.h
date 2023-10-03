@@ -84,6 +84,8 @@
  extern TaskHandle_t xTaskLed3Handle;
  extern TaskHandle_t xTaskButton3Handle;
 
+ extern QueueHandle_t QueueHandle;
+
 // ------ external functions declaration -------------------------------
 
 #ifdef __cplusplus
