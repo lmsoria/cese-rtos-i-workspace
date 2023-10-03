@@ -71,6 +71,12 @@
     uint32_t blinking_period_ms;
  } TaskData;
 
+ typedef struct
+ {
+    BoardLEDs dest;       ///< LED which we want to change the blinking status
+    ledFlag_t blinking_status;
+ } TaskMessage;
+
 
 // ------ external data declaration ------------------------------------
 /* Used to hold the handle of TaskTest. */
