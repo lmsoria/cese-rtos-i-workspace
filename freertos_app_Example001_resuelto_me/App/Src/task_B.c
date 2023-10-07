@@ -108,13 +108,6 @@ void vTask_B( void *pvParameters )
 
     while( 1 )
     {
-    	/* About a 1500 mS delay here */
-		/* Delay for a period.  This time we use a call to vTaskDelay() which
-		 * puts the task into the Blocked state until the delay period has expired.
-		 * The delay period is specified in 'ticks'. */
-    	vPrintStringAndNumber(pcTextForTask_B_Wait1500mS, lTask_BCnt);
-    	vPrintString("\n");
-
 		vTaskDelay(1500 / portTICK_RATE_MS);
 
 		lTask_BCnt++;
