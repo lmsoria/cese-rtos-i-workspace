@@ -76,15 +76,15 @@ uint32_t lTask_AFlag;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_A    				= "[Task Entrada] Running\r\n";
+const char *pcTextForTask_A    				= " Running\r\n";
 
-const char *pcTextForTask_A_lTasksCnt		= "\t[Task Entrada] Lugares ocupados :";
+const char *pcTextForTask_A_lTasksCnt		= "> Lugares ocupados:";
 
-const char *pcTextForTask_A_WaitEntry		= "\t[Task Entrada] Wait:   Entry\r\n\n";
-const char *pcTextForTask_A_WaitContinue	= "\t[Task Entrada] Wait:   Continue\r\n\n";
+const char *pcTextForTask_A_WaitEntry		= " | Wait:   Entry\r\n\n";
+const char *pcTextForTask_A_WaitContinue	= " | Wait:   Continue\r\n\n";
 
-const char *pcTextForTask_A_WaitMutex    	= "\t[Task Entrada] Wait:   Mutex\r\n\n";
-const char *pcTextForTask_A_SignalMutex  	= "\t[Task Entrada] Signal: Mutex\r\n\n";
+const char *pcTextForTask_A_WaitMutex    	= " | Wait:   Mutex\r\n\n";
+const char *pcTextForTask_A_SignalMutex  	= " | Signal: Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -99,8 +99,7 @@ void vTask_A( void *pvParameters )
 	EntryTaskData* const DATA = (EntryTaskData*)(pvParameters);
 
 	/* Print out the name of this task. */
-	vPrintString( pcTextForTask_A );
-	vPrintTwoStrings("Nombre de la tarea: ", DATA->name);
+	vPrintTwoStrings(DATA->name, pcTextForTask_A);
 
 	xSemaphoreHandle entry_semaphore = *DATA->entry_semaphore;
 	xSemaphoreHandle continue_semaphore = *DATA->continue_semaphore;
@@ -123,7 +122,7 @@ void vTask_A( void *pvParameters )
          * indefinitely meaning this function call will only return once the
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
-    	vPrintString( pcTextForTask_A_WaitEntry );
+    	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitEntry);
     	if(xSemaphoreTake( entry_semaphore, portMAX_DELAY ) == pdTRUE)
         {
     		/* The semaphore is created before the scheduler is started so already
@@ -134,7 +133,7 @@ void vTask_A( void *pvParameters )
     		 * the semaphore has been successfully obtained so there is no need to check
     		 * the return value.  If any other delay period was used then the code must
     		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-        	vPrintString( pcTextForTask_A_WaitMutex );
+        	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitMutex);
     		xSemaphoreTake( xMutex, portMAX_DELAY );
         	{
         		/* The following line will only execute once the semaphore has been
@@ -151,7 +150,7 @@ void vTask_A( void *pvParameters )
     				lTask_AFlag = 1;
     			}
        			/* 'Give' the semaphore to unblock the tasks. */
-       			vPrintString( pcTextForTask_A_SignalMutex );
+       			vPrintTwoStrings(DATA->name, pcTextForTask_A_SignalMutex);
        			xSemaphoreGive( xMutex );
 
    			    /* Check Task A Flag	*/
@@ -164,7 +163,7 @@ void vTask_A( void *pvParameters )
        		         * indefinitely meaning this function call will only return once the
        		         * semaphore has been successfully obtained - so there is no need to check
        		         * the returned value. */
-       			    vPrintString( pcTextForTask_A_WaitContinue );
+       			    vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitContinue);
        	        	xSemaphoreTake( continue_semaphore, portMAX_DELAY );
        	        	{
        	        		/* The following line will only execute once the semaphore has been
