@@ -77,11 +77,11 @@ uint32_t lTask_ACnt = 0;
  * tasks are executing. */
 const char *pcTextForTask_A    				= "  ==> Task    A - Running\r\n";
 
-const char *pcTextForTask_A_WaitEntry_A		= "  ==> Task    A - Wait:   Entry_A     \r\n\n";
-const char *pcTextForTask_A_WaitExit_A		= "  ==> Task    A - Wait:   Exit_A      \r\n\n";
+const char *pcTextForTask_A_WaitEntry_A		= "[Task A] Espero que entre un auto\r\n\n";
+const char *pcTextForTask_A_WaitExit_A		= "[Task A] Espero que salga el auto\r\n\n";
 
-const char *pcTextForTask_A_WaitMutex		= "  ==> Task    A - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_A_SignalMutex		= "  ==> Task    A - Signal: Mutex    ==>\r\n\n";
+const char *pcTextForTask_A_WaitMutex		= "[Task A] Espero que se libere el puente\r\n\n";
+const char *pcTextForTask_A_SignalMutex		= "[Task A] puente liberado!\r\n\n";
 
 const char *pcTextForTask_A_Wait1500mS		= "  ==> Task    A - Wait:   1500mS - cnt: ";
 
