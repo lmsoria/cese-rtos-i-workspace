@@ -1,0 +1,11 @@
+vPrintString( pcTextForTask_Test_SignalEntry_A );
+xSemaphoreGive( xBinarySemaphoreEntry_A );
+
+vPrintString( pcTextForTask_Test_SignalEntry_B );
+xSemaphoreGive( xBinarySemaphoreEntry_B );
+
+vPrintString( pcTextForTask_Test_SignalExit_A );
+xSemaphoreGive( xBinarySemaphoreExit_A );
+
+vPrintString( pcTextForTask_Test_SignalExit_B );
+xSemaphoreGive( xBinarySemaphoreExit_B );
