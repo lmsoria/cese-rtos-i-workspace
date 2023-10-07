@@ -110,10 +110,16 @@ void vTask_A( void *pvParameters )
     	vPrintString( pcTextForTask_A_WaitEntry_A );
     	xSemaphoreTake( xBinarySemaphoreEntry_A, portMAX_DELAY);
 
-    	// Seccion Critica, tengo que tomar un muex aqui
+    	// Seccion Critica, tengo que tomar un mutex aqui
+    	vPrintString( pcTextForTask_A_WaitMutex );
+    	xSemaphoreTake(xMutex, portMAX_DELAY);
 
     	vPrintString( pcTextForTask_A_WaitExit_A );
     	xSemaphoreTake( xBinarySemaphoreExit_A, portMAX_DELAY);
+
+    	// Fin de la Seccion Critica, Liberar Mutex
+    	vPrintString( pcTextForTask_A_SignalMutex );
+    	xSemaphoreGive(xMutex);
 
 		lTask_ACnt++;
 	}
