@@ -76,15 +76,15 @@ uint32_t lTask_AFlag;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_A    				= "  ==> Task    A - Running\r\n";
+const char *pcTextForTask_A    				= "[Task Entrada] Running\r\n";
 
-const char *pcTextForTask_A_lTasksCnt		= "  <=> Task    A - lTasksCnt :";
+const char *pcTextForTask_A_lTasksCnt		= "\t[Task Entrada] Lugares ocupados :";
 
-const char *pcTextForTask_A_WaitEntry		= "  ==> Task    A - Wait:   Entry       \r\n\n";
-const char *pcTextForTask_A_WaitContinue	= "  ==> Task    A - Wait:   Continue    \r\n\n";
+const char *pcTextForTask_A_WaitEntry		= "\t[Task Entrada] Wait:   Entry\r\n\n";
+const char *pcTextForTask_A_WaitContinue	= "\t[Task Entrada] Wait:   Continue\r\n\n";
 
-const char *pcTextForTask_A_WaitMutex    	= "  ==> Task    A - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_A_SignalMutex  	= "  ==> Task    A - Signal: Mutex    ==>\r\n\n";
+const char *pcTextForTask_A_WaitMutex    	= "\t[Task Entrada] Wait:   Mutex\r\n\n";
+const char *pcTextForTask_A_SignalMutex  	= "\t[Task Entrada] Signal: Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -108,7 +108,7 @@ void vTask_A( void *pvParameters )
     xSemaphoreTake( xBinarySemaphoreContinue, (portTickType) 0 );
 
     /* Init Task A & B Counter and Reset Task A Flag	*/
-    lTasksCnt = 0;
+    lugares_ocupados = 0;
     lTask_AFlag = 0;
 
     while( 1 )
@@ -118,7 +118,7 @@ void vTask_A( void *pvParameters )
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
     	vPrintString( pcTextForTask_A_WaitEntry );
-    	xSemaphoreTake( xBinarySemaphoreEntry, portMAX_DELAY );
+    	if(xSemaphoreTake( xBinarySemaphoreEntry, portMAX_DELAY ) == pdTRUE)
         {
     		/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
@@ -135,11 +135,11 @@ void vTask_A( void *pvParameters )
         		 * successfully obtained. */
 
         		/* Update Task A & B Counter */
-    			lTasksCnt++;
-    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lTasksCnt);
+    			lugares_ocupados++;
+    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lugares_ocupados);
 
    			    /* Check Task A & B Counter	*/
-    			if( lTasksCnt == lTasksCntMAX )
+    			if( lugares_ocupados == lTasksCntMAX )
     			{
        			    /* Set Task A Flag	*/
     				lTask_AFlag = 1;

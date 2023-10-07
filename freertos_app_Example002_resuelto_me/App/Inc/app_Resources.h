@@ -73,7 +73,7 @@ extern xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
 #define lTasksCntMAX	3
-extern uint32_t	lTasksCnt;
+extern uint32_t	lugares_ocupados;
 
 // ------ external functions declaration -------------------------------
 

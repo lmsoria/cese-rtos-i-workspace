@@ -76,15 +76,15 @@ uint32_t lTask_BFlag;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_B    					= "  ==> Task    B - Running\r\n";
+const char *pcTextForTask_B    					= "[Task Salida] Running\r\n";
 
-const char *pcTextForTask_B_lTasksCnt			= "  <=> Task    B - lTasksCnt :";
+const char *pcTextForTask_B_lTasksCnt			= "\t[Task Salida] Lugares disponibles :";
 
-const char *pcTextForTask_B_WaitExit			= "  ==> Task    B - Wait:   Exit        \r\n\n";
-const char *pcTextForTask_B_SignalContinue   	= "  ==> Task    B - Signal: Continue ==>\r\n\n";
+const char *pcTextForTask_B_WaitExit			= "\t[Task Salida] Wait:   Exit\r\n\n";
+const char *pcTextForTask_B_SignalContinue   	= "\t[Task Salida] Signal: Continue\r\n\n";
 
-const char *pcTextForTask_B_WaitMutex        	= "  ==> Task    B - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_B_SignalMutex      	= "  ==> Task    B - Signal: Mutex    ==>\r\n\n";
+const char *pcTextForTask_B_WaitMutex        	= "\t[Task Salida] Wait:   Mutex\r\n\n";
+const char *pcTextForTask_B_SignalMutex      	= "\t[Task Salida] Signal: Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -133,11 +133,11 @@ void vTask_B( void *pvParameters )
         		 * successfully obtained. */
 
         		/* Update Task A & B Counter */
-        		lTasksCnt--;
-    			vPrintStringAndNumber( pcTextForTask_B_lTasksCnt, lTasksCnt);
+        		lugares_ocupados--;
+    			vPrintStringAndNumber( pcTextForTask_B_lTasksCnt, lugares_ocupados);
 
    			    /* Check Task A & B Counter	*/
-    			if( lTasksCnt == (lTasksCntMAX - 1) )
+    			if( lugares_ocupados == (lTasksCntMAX - 1) )
     			{
        			    /* Set Task B Flag	*/
     				lTask_BFlag = 1;

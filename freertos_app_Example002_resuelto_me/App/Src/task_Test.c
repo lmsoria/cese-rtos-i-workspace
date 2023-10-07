@@ -82,8 +82,8 @@ const char *pcTextForTask_Test_TEST_X				= "  <=> Task Test - TEST_X : ";
 const char *pcTextForTask_Test_priority			 	= "  <=> Tesk Test - priority:";
 const char *pcTextForTask_Test_eTask_TestArrayIndex	= "  <=> Task Test - eTask_TestArray Index :";
 
-const char *pcTextForTask_Test_SignalEntry 			= "  <=> Task Test - Signal: Entry  <=>\r\n";
-const char *pcTextForTask_Test_SignalExit			= "  ==> Task Test - Signal: Exit   <=>\r\n";
+const char *pcTextForTask_Test_SignalEntry 			= "[TEST] Entro un auto\r\n";
+const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto\r\n";
 const char *pcTextForTask_Test_SignalError			= "  <=> Task Test - Signal: Error  <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS			= "  <=> Task Test - Wait:   5000mS <=>\r\n\n";
 
@@ -161,8 +161,8 @@ void vTask_Test( void *pvParameters )
 		/* Scanning the array of events to excite tasks */
 		for ( i = 0; i < (sizeof(eTask_TestArray)/sizeof(eTask_Test_t)); i++ )
 		{
-			vPrintTwoStrings( pcTaskGetName( vTask_TestHandle ), "- Running" );
-			vPrintStringAndNumber( pcTextForTask_Test_eTask_TestArrayIndex, i);
+//			vPrintTwoStrings( pcTaskGetName( vTask_TestHandle ), "- Running" );
+//			vPrintStringAndNumber( pcTextForTask_Test_eTask_TestArrayIndex, i);
 
 			switch( eTask_TestArray[i] ) {
 
@@ -192,7 +192,7 @@ void vTask_Test( void *pvParameters )
 			 * portTICK_RATE_MS constant is used to convert this to milliseconds.
 			 * xLastWakeTime is automatically updated within vTaskDelayUntil() so does not
 			 * have to be updated by this task code. */
-		    vPrintString( pcTextForTask_Test_Wait5000mS );
+//		    vPrintString( pcTextForTask_Test_Wait5000mS );
     		vTaskDelayUntil( &xLastWakeTime, (5000 / portTICK_RATE_MS) );
 		}
 	}

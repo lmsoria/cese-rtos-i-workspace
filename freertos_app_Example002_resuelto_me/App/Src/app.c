@@ -85,7 +85,7 @@ xTaskHandle vTask_BHandle;
 xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
-uint32_t	lTasksCnt;
+uint32_t	lugares_ocupados;
 
 // ------ internal functions declaration -------------------------------
 
