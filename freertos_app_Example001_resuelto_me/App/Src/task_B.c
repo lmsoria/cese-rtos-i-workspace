@@ -77,11 +77,11 @@ uint32_t lTask_BCnt = 0;
  * tasks are executing. */
 const char *pcTextForTask_B    			= "  ==> Task    B - Running\r\n";
 
-const char *pcTextForTask_B_WaitEntry_B	= "  ==> Task    B - Wait:   Entry_B     \r\n\n";
-const char *pcTextForTask_B_WaitExit_B	= "  ==> Task    B - Wait:   Exit_B      \r\n\n";
+const char *pcTextForTask_B_WaitEntry_B	= "\t[Task B] Espero que entre un auto...\r\n\n";
+const char *pcTextForTask_B_WaitExit_B	= "\t[Task B] Espero que salga el auto...\r\n\n";
 
-const char *pcTextForTask_B_WaitMutex	= "  ==> Task    B - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_B_SignalMutex	= "  ==> Task    B - Signal: Mutex    ==>\r\n\n";
+const char *pcTextForTask_B_WaitMutex	= "\t[Task B] Espero que se libere el puente...\r\n\n";
+const char *pcTextForTask_B_SignalMutex	= "\t[Task B] puente liberado!\r\n\n\r\n\n";
 
 const char *pcTextForTask_B_Wait1500mS	= "  ==> Task    B - Wait:   1500mS - cnt: ";
 
@@ -108,9 +108,23 @@ void vTask_B( void *pvParameters )
 
     while( 1 )
     {
-		vTaskDelay(1500 / portTICK_RATE_MS);
+    	vPrintString( pcTextForTask_B_WaitEntry_B );
+    	xSemaphoreTake( xBinarySemaphoreEntry_B, portMAX_DELAY);
 
-		lTask_BCnt++;
+    	// Seccion Critica, tengo que tomar un mutex aqui
+    	vPrintString( pcTextForTask_B_WaitMutex );
+    	xSemaphoreTake(xMutex, portMAX_DELAY);
+
+    	vPrintString("\t[Task B] SECCION CRITICA - Auto yendo B -> A\r\n\n");
+
+    	vPrintString( pcTextForTask_B_WaitExit_B );
+    	xSemaphoreTake( xBinarySemaphoreExit_B, portMAX_DELAY);
+
+    	// Fin de la Seccion Critica, Liberar Mutex
+    	vPrintString( pcTextForTask_B_SignalMutex );
+    	xSemaphoreGive(xMutex);
+
+    	lTask_BCnt++;
 	}
 }
 

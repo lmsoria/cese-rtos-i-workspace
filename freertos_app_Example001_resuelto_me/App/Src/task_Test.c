@@ -89,7 +89,7 @@ const char *pcTextForTask_Test_SignalExit_B     	= "[Task Test] - Salio un auto 
 const char *pcTextForTask_Test_SignalError  		= "  <=> Task Test - Signal: Error    <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS       	= "  <=> Task Test - Wait:   5000mS   <=>\r\n\n";
 
-#define TEST_X ( 1 )
+#define TEST_X ( 7 )
 
 #if( TEST_X == 0 )
 /* Array of events to excite tasks */
