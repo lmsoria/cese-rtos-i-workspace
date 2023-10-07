@@ -107,11 +107,13 @@ void vTask_A( void *pvParameters )
     xSemaphoreTake( xBinarySemaphoreExit_A, (portTickType) 0 );
     while( 1 )
     {
-    	/* About a 1500 mS delay here */
-		/* Delay for a period.  This time we use a call to vTaskDelay() which
-		 * puts the task into the Blocked state until the delay period has expired.
-		 * The delay period is specified in 'ticks'. */
-		vTaskDelay(1500 / portTICK_RATE_MS);
+    	vPrintString( pcTextForTask_A_WaitEntry_A );
+    	xSemaphoreTake( xBinarySemaphoreEntry_A, portMAX_DELAY);
+
+    	// Seccion Critica, tengo que tomar un muex aqui
+
+    	vPrintString( pcTextForTask_A_WaitExit_A );
+    	xSemaphoreTake( xBinarySemaphoreExit_A, portMAX_DELAY);
 
 		lTask_ACnt++;
 	}
