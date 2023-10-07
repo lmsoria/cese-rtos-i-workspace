@@ -61,11 +61,23 @@
 	 ENTRADA_C,
  } EntryType;
 
+ typedef enum {
+	 SALIDA_A  = 0,
+	 SALIDA_B,
+	 SALIDA_C,
+ } ExitType;
+
  typedef struct {
 	 char name[30];
 	 xSemaphoreHandle* entry_semaphore;
 	 xSemaphoreHandle* continue_semaphore;
  } EntryTaskData;
+
+ typedef struct {
+	 char name[30];
+	 xSemaphoreHandle* exit_semaphore;
+	 xSemaphoreHandle* continue_semaphore;
+ } ExitTaskData;
 
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the

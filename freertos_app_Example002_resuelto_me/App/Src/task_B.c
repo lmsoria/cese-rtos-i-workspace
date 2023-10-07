@@ -76,15 +76,15 @@ uint32_t lTask_BFlag;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_B    					= "[Task Salida] Running\r\n";
+const char *pcTextForTask_B    					= " Running\r\n";
 
-const char *pcTextForTask_B_lTasksCnt			= "\t[Task Salida] Lugares disponibles :";
+const char *pcTextForTask_B_lTasksCnt			= "> Lugares ocupados:";
 
-const char *pcTextForTask_B_WaitExit			= "\t[Task Salida] Wait:   Exit\r\n\n";
-const char *pcTextForTask_B_SignalContinue   	= "\t[Task Salida] Signal: Continue\r\n\n";
+const char *pcTextForTask_B_WaitExit			= " | Wait:   Exit\r\n\n";
+const char *pcTextForTask_B_SignalContinue   	= " | Signal: Continue\r\n\n";
 
-const char *pcTextForTask_B_WaitMutex        	= "\t[Task Salida] Wait:   Mutex\r\n\n";
-const char *pcTextForTask_B_SignalMutex      	= "\t[Task Salida] Signal: Mutex\r\n\n";
+const char *pcTextForTask_B_WaitMutex        	= " | Wait:   Mutex\r\n\n";
+const char *pcTextForTask_B_SignalMutex      	= " | Signal: Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -96,15 +96,19 @@ const char *pcTextForTask_B_SignalMutex      	= "\t[Task Salida] Signal: Mutex\r
 /* Task B thread */
 void vTask_B( void *pvParameters )
 {
+	ExitTaskData* const DATA = (ExitTaskData*)(pvParameters);
 	/* Print out the name of this task. */
-	vPrintString( pcTextForTask_B );
+	vPrintTwoStrings(DATA->name, pcTextForTask_B);
+
+	xSemaphoreHandle exit_semaphore = *DATA->exit_semaphore;
+	xSemaphoreHandle continue_semaphore = *DATA->continue_semaphore;
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( xBinarySemaphoreExit, (portTickType) 0 );
+    xSemaphoreTake( exit_semaphore, (portTickType) 0 );
 
     /* Reset Task B Flag	*/
     lTask_BFlag = 0;
@@ -115,8 +119,8 @@ void vTask_B( void *pvParameters )
          * indefinitely meaning this function call will only return once the
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
-		vPrintString( pcTextForTask_B_WaitExit );
-        xSemaphoreTake( xBinarySemaphoreExit, portMAX_DELAY );
+		vPrintTwoStrings(DATA->name, pcTextForTask_B_WaitExit);
+        xSemaphoreTake( exit_semaphore, portMAX_DELAY );
         {
         	/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
@@ -126,7 +130,7 @@ void vTask_B( void *pvParameters )
     		 * the semaphore has been successfully obtained so there is no need to check
     		 * the return value.  If any other delay period was used then the code must
     		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-        	vPrintString( pcTextForTask_B_WaitMutex );
+        	vPrintTwoStrings(DATA->name, pcTextForTask_B_WaitMutex);
         	xSemaphoreTake( xMutex, portMAX_DELAY );
         	{
         		/* The following line will only execute once the semaphore has been
@@ -143,7 +147,8 @@ void vTask_B( void *pvParameters )
     				lTask_BFlag = 1;
     			}
     			/* 'Give' the semaphore to unblock the tasks. */
-        		vPrintString( pcTextForTask_B_SignalMutex );
+            	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalMutex);
+
         		xSemaphoreGive( xMutex );
 
    			    /* Check Task B Flag	*/
@@ -153,8 +158,8 @@ void vTask_B( void *pvParameters )
        			    lTask_BFlag = 0;
 
         			/* 'Give' the semaphore to unblock the task A. */
-       	        	vPrintString( pcTextForTask_B_SignalContinue );
-       	        	xSemaphoreGive( xBinarySemaphoreContinue );
+                	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
+       	        	xSemaphoreGive( continue_semaphore );
        			}
         	}
         }

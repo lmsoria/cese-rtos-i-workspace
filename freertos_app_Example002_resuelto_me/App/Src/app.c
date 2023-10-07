@@ -108,6 +108,25 @@ EntryTaskData ENTRY_TASK_DATA_ARRAY[3] =
 	},
 };
 
+ExitTaskData EXIT_TASK_DATA_ARRAY[3] =
+{
+	[SALIDA_A] = {
+			.name = "SALIDA_A",
+			.exit_semaphore = &xBinarySemaphoreExit,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+	[SALIDA_B] = {
+			.name = "SALIDA_B",
+			.exit_semaphore = &xBinarySemaphoreExit,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+	[SALIDA_C] = {
+			.name = "SALIDA_C",
+			.exit_semaphore = &xBinarySemaphoreExit,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+};
+
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
@@ -170,7 +189,7 @@ void appInit( void )
     ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
 					   "Task B",					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   NULL,						/* We are not using the task parameter.		*/
+					   &EXIT_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &vTask_BHandle );				/* We are using a variable as task handle.	*/
 
