@@ -62,6 +62,7 @@
 
 /* Application & Tasks includes. */
 #include "app.h"
+#include "app_Resources.h"
 #include "task_A.h"
 #include "task_B.h"
 #include "task_Test.h"
@@ -86,6 +87,26 @@ xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
 uint32_t	lugares_ocupados;
+
+
+EntryTaskData ENTRY_TASK_DATA_ARRAY[3] =
+{
+	[ENTRADA_A] = {
+			.name = "ENTRADA_A",
+			.entry_semaphore = &xBinarySemaphoreEntry,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+	[ENTRADA_B] = {
+			.name = "ENTRADA_B",
+			.entry_semaphore = &xBinarySemaphoreEntry,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+	[ENTRADA_C] = {
+			.name = "ENTRADA_C",
+			.entry_semaphore = &xBinarySemaphoreEntry,
+			.continue_semaphore = &xBinarySemaphoreContinue,
+	},
+};
 
 // ------ internal functions declaration -------------------------------
 
@@ -138,7 +159,7 @@ void appInit( void )
     ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
 					   "Task A",					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   NULL,						/* We are not using the task parameter.		*/
+					   &ENTRY_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &vTask_AHandle );				/* We are using a variable as task handle.	*/
 

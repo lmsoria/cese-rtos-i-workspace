@@ -96,16 +96,22 @@ const char *pcTextForTask_A_SignalMutex  	= "\t[Task Entrada] Signal: Mutex\r\n\
 /* Task A thread */
 void vTask_A( void *pvParameters )
 {
+	EntryTaskData* const DATA = (EntryTaskData*)(pvParameters);
+
 	/* Print out the name of this task. */
 	vPrintString( pcTextForTask_A );
+	vPrintTwoStrings("Nombre de la tarea: ", DATA->name);
+
+	xSemaphoreHandle entry_semaphore = *DATA->entry_semaphore;
+	xSemaphoreHandle continue_semaphore = *DATA->continue_semaphore;
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( xBinarySemaphoreEntry, (portTickType) 0 );
-    xSemaphoreTake( xBinarySemaphoreContinue, (portTickType) 0 );
+    xSemaphoreTake( entry_semaphore, (portTickType) 0 );
+    xSemaphoreTake( continue_semaphore, (portTickType) 0 );
 
     /* Init Task A & B Counter and Reset Task A Flag	*/
     lugares_ocupados = 0;
@@ -118,7 +124,7 @@ void vTask_A( void *pvParameters )
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
     	vPrintString( pcTextForTask_A_WaitEntry );
-    	if(xSemaphoreTake( xBinarySemaphoreEntry, portMAX_DELAY ) == pdTRUE)
+    	if(xSemaphoreTake( entry_semaphore, portMAX_DELAY ) == pdTRUE)
         {
     		/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
@@ -159,7 +165,7 @@ void vTask_A( void *pvParameters )
        		         * semaphore has been successfully obtained - so there is no need to check
        		         * the returned value. */
        			    vPrintString( pcTextForTask_A_WaitContinue );
-       	        	xSemaphoreTake( xBinarySemaphoreContinue, portMAX_DELAY );
+       	        	xSemaphoreTake( continue_semaphore, portMAX_DELAY );
        	        	{
        	        		/* The following line will only execute once the semaphore has been
        	        		 * successfully obtained. */

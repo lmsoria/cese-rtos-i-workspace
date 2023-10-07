@@ -55,6 +55,18 @@
 
 // ------ typedef ------------------------------------------------------
 
+ typedef enum {
+	 ENTRADA_A  = 0,
+	 ENTRADA_B,
+	 ENTRADA_C,
+ } EntryType;
+
+ typedef struct {
+	 char name[30];
+	 xSemaphoreHandle* entry_semaphore;
+	 xSemaphoreHandle* continue_semaphore;
+ } EntryTaskData;
+
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
