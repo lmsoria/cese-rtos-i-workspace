@@ -76,6 +76,9 @@ xSemaphoreHandle xBinarySemaphoreEntry;
 xSemaphoreHandle xBinarySemaphoreExit;
 xSemaphoreHandle xBinarySemaphoreContinue;
 
+xSemaphoreHandle EntrySemaphores[TOTAL_ENTRADAS];
+xSemaphoreHandle ExitSemaphores[TOTAL_SALIDAS];
+
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to ........ */
 xSemaphoreHandle xMutex;
@@ -131,11 +134,36 @@ ExitTaskData EXIT_TASK_DATA_ARRAY[3] =
 
 // ------ internal data definition -------------------------------------
 const char *pcTextForMain = "freertos_app_Example002 is running: parking lot\r\n\n";
+const char* SEMAPHORE_NAME = "Semaphore_";
 
 // ------ external data definition -------------------------------------
 
 // ------ internal functions definition --------------------------------
+static char* entry_to_str(EntryType entry) {
+	 switch (entry) {
+		case ENTRADA_A:
+			return "ENTRADA_A";
+		case ENTRADA_B:
+			return "ENTRADA_B";
+		case ENTRADA_C:
+			return "ENTRADA_C";
+		default:
+			return "";
+	}
+}
 
+static char* exit_to_str(ExitType exit) {
+	 switch (exit) {
+		case SALIDA_A:
+			return "SALIDA_A";
+		case SALIDA_B:
+			return "SALIDA_B";
+		case SALIDA_C:
+			return "SALIDA_C";
+		default:
+			return "";
+	}
+}
 // ------ external functions definition --------------------------------
 
 
@@ -145,6 +173,24 @@ void appInit( void )
 {
 	/* Print out the name of this Example. */
   	vPrintString( pcTextForMain );
+
+  	char entry_semaphores_names[TOTAL_ENTRADAS][30] = {0};
+  	char exit_semaphores_names[TOTAL_ENTRADAS][30] = {0};
+
+
+  	for(uint8_t i = 0; i < TOTAL_ENTRADAS; i++) {
+  		snprintf(entry_semaphores_names[i], 30, "%s%s", SEMAPHORE_NAME, entry_to_str(i));
+  		vSemaphoreCreateBinary(EntrySemaphores[i]);
+  		configASSERT(EntrySemaphores[i] !=  NULL);
+  		vQueueAddToRegistry(EntrySemaphores[i], entry_semaphores_names[i]);
+  	}
+
+  	for(uint8_t i = 0; i < TOTAL_SALIDAS; i++) {
+  		snprintf(exit_semaphores_names[i], 30, "%s%s", SEMAPHORE_NAME, exit_to_str(i));
+  		vSemaphoreCreateBinary(ExitSemaphores[i]);
+  		configASSERT(ExitSemaphores[i] !=  NULL);
+  		vQueueAddToRegistry(ExitSemaphores[i], exit_semaphores_names[i]);
+  	}
 
     /* Before a semaphore is used it must be explicitly created.
      * In this example a binary semaphore is created. */

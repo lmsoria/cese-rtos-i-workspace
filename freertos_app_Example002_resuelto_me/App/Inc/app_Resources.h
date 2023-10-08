@@ -59,12 +59,14 @@
 	 ENTRADA_A  = 0,
 	 ENTRADA_B,
 	 ENTRADA_C,
+	 TOTAL_ENTRADAS // Keep this value always at the bottom!
  } EntryType;
 
  typedef enum {
 	 SALIDA_A  = 0,
 	 SALIDA_B,
 	 SALIDA_C,
+	 TOTAL_SALIDAS // Keep this value always at the bottom!
  } ExitType;
 
  typedef struct {
@@ -85,6 +87,9 @@
 extern xSemaphoreHandle xBinarySemaphoreEntry;
 extern xSemaphoreHandle xBinarySemaphoreExit;
 extern xSemaphoreHandle xBinarySemaphoreContinue;
+
+extern xSemaphoreHandle EntrySemaphores[TOTAL_ENTRADAS];
+extern xSemaphoreHandle ExitSemaphores[TOTAL_SALIDAS];
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to...*/
