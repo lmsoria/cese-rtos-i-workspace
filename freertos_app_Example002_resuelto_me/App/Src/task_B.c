@@ -100,15 +100,15 @@ void vTask_B( void *pvParameters )
 	/* Print out the name of this task. */
 	vPrintTwoStrings(DATA->name, pcTextForTask_B);
 
-	xSemaphoreHandle exit_semaphore = *DATA->exit_semaphore;
-	xSemaphoreHandle continue_semaphore = *DATA->continue_semaphore;
+	const xSemaphoreHandle EXIT_SEMAPHORE = *DATA->exit_semaphore;
+	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( exit_semaphore, (portTickType) 0 );
+    xSemaphoreTake( EXIT_SEMAPHORE, (portTickType) 0 );
 
     /* Reset Task B Flag	*/
     lTask_BFlag = 0;
@@ -120,7 +120,7 @@ void vTask_B( void *pvParameters )
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
 		vPrintTwoStrings(DATA->name, pcTextForTask_B_WaitExit);
-        xSemaphoreTake( exit_semaphore, portMAX_DELAY );
+        xSemaphoreTake( EXIT_SEMAPHORE, portMAX_DELAY );
         {
         	/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
@@ -159,7 +159,7 @@ void vTask_B( void *pvParameters )
 
         			/* 'Give' the semaphore to unblock the task A. */
                 	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
-       	        	xSemaphoreGive( continue_semaphore );
+       	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
        			}
         	}
         }
