@@ -72,8 +72,6 @@
 // ------ internal data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
-xSemaphoreHandle xBinarySemaphoreEntry;
-xSemaphoreHandle xBinarySemaphoreExit;
 xSemaphoreHandle xBinarySemaphoreContinue;
 
 xSemaphoreHandle EntrySemaphores[TOTAL_ENTRADAS];
@@ -193,18 +191,12 @@ void appInit( void )
 
     /* Before a semaphore is used it must be explicitly created.
      * In this example a binary semaphore is created. */
-    vSemaphoreCreateBinary( xBinarySemaphoreEntry    );
-    vSemaphoreCreateBinary( xBinarySemaphoreExit     );
     vSemaphoreCreateBinary( xBinarySemaphoreContinue );
 
     /* Check the semaphore was created successfully. */
-	configASSERT( xBinarySemaphoreEntry    !=  NULL );
-	configASSERT( xBinarySemaphoreExit     !=  NULL );
 	configASSERT( xBinarySemaphoreContinue !=  NULL );
 
     /* Add semaphore to registry. */
-	vQueueAddToRegistry(xBinarySemaphoreEntry,    "xBinarySemaphoreEntry");
-    vQueueAddToRegistry(xBinarySemaphoreExit,     "xBinarySemaphoreExit");
     vQueueAddToRegistry(xBinarySemaphoreContinue, "xBinarySemaphoreContinue");
 
     /* Before a semaphore is used it must be explicitly created.

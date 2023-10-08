@@ -84,8 +84,6 @@
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
-extern xSemaphoreHandle xBinarySemaphoreEntry;
-extern xSemaphoreHandle xBinarySemaphoreExit;
 extern xSemaphoreHandle xBinarySemaphoreContinue;
 
 extern xSemaphoreHandle EntrySemaphores[TOTAL_ENTRADAS];
