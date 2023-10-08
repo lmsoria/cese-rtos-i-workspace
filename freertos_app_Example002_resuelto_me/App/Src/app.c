@@ -136,6 +136,9 @@ ExitTaskData EXIT_TASK_DATA_ARRAY[TOTAL_SALIDAS] =
 const char *pcTextForMain = "freertos_app_Example002 is running: parking lot\r\n\n";
 const char* SEMAPHORE_NAME = "Semaphore_";
 
+static char entry_semaphores_names[TOTAL_ENTRADAS][30] = {0};
+static char exit_semaphores_names[TOTAL_SALIDAS][30] = {0};
+
 // ------ external data definition -------------------------------------
 
 // ------ internal functions definition --------------------------------
@@ -173,10 +176,6 @@ void appInit( void )
 {
 	/* Print out the name of this Example. */
   	vPrintString( pcTextForMain );
-
-  	char entry_semaphores_names[TOTAL_ENTRADAS][30] = {0};
-  	char exit_semaphores_names[TOTAL_ENTRADAS][30] = {0};
-
 
   	for(uint8_t i = 0; i < TOTAL_ENTRADAS; i++) {
   		snprintf(entry_semaphores_names[i], 30, "%s%s", SEMAPHORE_NAME, entry_to_str(i));
