@@ -92,40 +92,40 @@ xTaskHandle vTask_TestHandle;
 uint32_t	lugares_ocupados;
 
 
-EntryTaskData ENTRY_TASK_DATA_ARRAY[3] =
+EntryTaskData ENTRY_TASK_DATA_ARRAY[TOTAL_ENTRADAS] =
 {
 	[ENTRADA_A] = {
 			.name = "ENTRADA_A",
-			.entry_semaphore = &xBinarySemaphoreEntry,
+			.entry_semaphore = &EntrySemaphores[ENTRADA_A],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 	[ENTRADA_B] = {
 			.name = "ENTRADA_B",
-			.entry_semaphore = &xBinarySemaphoreEntry,
+			.entry_semaphore = &EntrySemaphores[ENTRADA_B],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 	[ENTRADA_C] = {
 			.name = "ENTRADA_C",
-			.entry_semaphore = &xBinarySemaphoreEntry,
+			.entry_semaphore = &EntrySemaphores[ENTRADA_C],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 };
 
-ExitTaskData EXIT_TASK_DATA_ARRAY[3] =
+ExitTaskData EXIT_TASK_DATA_ARRAY[TOTAL_SALIDAS] =
 {
 	[SALIDA_A] = {
 			.name = "SALIDA_A",
-			.exit_semaphore = &xBinarySemaphoreExit,
+			.exit_semaphore = &ExitSemaphores[SALIDA_A],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 	[SALIDA_B] = {
 			.name = "SALIDA_B",
-			.exit_semaphore = &xBinarySemaphoreExit,
+			.exit_semaphore = &ExitSemaphores[SALIDA_B],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 	[SALIDA_C] = {
 			.name = "SALIDA_C",
-			.exit_semaphore = &xBinarySemaphoreExit,
+			.exit_semaphore = &ExitSemaphores[SALIDA_C],
 			.continue_semaphore = &xBinarySemaphoreContinue,
 	},
 };

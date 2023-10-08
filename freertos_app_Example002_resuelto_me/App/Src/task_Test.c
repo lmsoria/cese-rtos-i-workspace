@@ -78,7 +78,7 @@ typedef enum eTask_Test{ Error, Entry, Exit } eTask_Test_t;
  * tasks are executing. */
 const char *pcTextForTask_Test						= "  <=> Task Test - Running\r\n\n";
 
-const char *pcTextForTask_Test_TEST_X				= "  <=> Task Test - TEST_X : ";
+const char *pcTextForTask_Test_TEST_X				= "[TEST] Corriendo Tarea - Variante: ";
 const char *pcTextForTask_Test_priority			 	= "  <=> Tesk Test - priority:";
 const char *pcTextForTask_Test_eTask_TestArrayIndex	= "  <=> Task Test - eTask_TestArray Index :";
 
@@ -86,6 +86,21 @@ const char *pcTextForTask_Test_SignalEntry 			= "[TEST] Entro un auto\r\n";
 const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto\r\n";
 const char *pcTextForTask_Test_SignalError			= "  <=> Task Test - Signal: Error  <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS			= "  <=> Task Test - Wait:   5000mS <=>\r\n\n";
+
+
+
+static char* entry_to_str(EntryType entry) {
+	 switch (entry) {
+		case ENTRADA_A:
+			return "ENTRADA_A";
+		case ENTRADA_B:
+			return "ENTRADA_B";
+		case ENTRADA_C:
+			return "ENTRADA_C";
+		default:
+			return "";
+	}
+}
 
 #define TEST_X ( 3 )
 
@@ -134,7 +149,6 @@ void vTask_Test( void *pvParameters )
 	UBaseType_t uxPriority;
 
 	/* Print out the name, parameters and TEST_X of this task. */
-	vPrintString( pcTextForTask_Test );
 	vPrintStringAndNumber( pcTextForTask_Test_TEST_X, i);
 
 	/* The xLastWakeTime variable needs to be initialized with the current tick
@@ -153,7 +167,6 @@ void vTask_Test( void *pvParameters )
 	/* Setting the TestingTask priority above the other tasks priority will
 	 * cause TestingTask to immediately start running (as then TestingTask
 	 * will have the higher priority of the three created tasks). */
-	vPrintStringAndNumber( pcTextForTask_Test_priority, uxPriority );
 	vTaskPrioritySet( vTask_TestHandle, uxPriority );
 
 	while( 1 )
@@ -161,23 +174,19 @@ void vTask_Test( void *pvParameters )
 		/* Scanning the array of events to excite tasks */
 		for ( i = 0; i < (sizeof(eTask_TestArray)/sizeof(eTask_Test_t)); i++ )
 		{
-//			vPrintTwoStrings( pcTaskGetName( vTask_TestHandle ), "- Running" );
-//			vPrintStringAndNumber( pcTextForTask_Test_eTask_TestArrayIndex, i);
-
 			switch( eTask_TestArray[i] ) {
 
 	    		case Entry:
-
 				    /* 'Give' the semaphore to unblock the task A. */
 		    		vPrintString( pcTextForTask_Test_SignalEntry );
-					xSemaphoreGive( xBinarySemaphoreEntry );
+					xSemaphoreGive( EntrySemaphores[0] );
 	    			break;
 
 	    		case Exit:
 
 				    /* 'Give' the semaphore to unblock the task B. */
 		    		vPrintString( pcTextForTask_Test_SignalExit );
-		    		xSemaphoreGive( xBinarySemaphoreExit );
+		    		xSemaphoreGive( ExitSemaphores[0] );
 	    			break;
 
 		    	case Error:
@@ -192,7 +201,6 @@ void vTask_Test( void *pvParameters )
 			 * portTICK_RATE_MS constant is used to convert this to milliseconds.
 			 * xLastWakeTime is automatically updated within vTaskDelayUntil() so does not
 			 * have to be updated by this task code. */
-//		    vPrintString( pcTextForTask_Test_Wait5000mS );
     		vTaskDelayUntil( &xLastWakeTime, (5000 / portTICK_RATE_MS) );
 		}
 	}
