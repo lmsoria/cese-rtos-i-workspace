@@ -75,7 +75,7 @@
 #define configUSE_STATS_FORMATTING_FUNCTIONS     1
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
-#define configQUEUE_REGISTRY_SIZE                8
+#define configQUEUE_REGISTRY_SIZE                16
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
 #define configRECORD_STACK_HIGH_ADDRESS          1
 /* USER CODE BEGIN MESSAGE_BUFFER_LENGTH_TYPE */

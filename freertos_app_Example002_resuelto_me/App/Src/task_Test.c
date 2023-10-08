@@ -70,6 +70,12 @@
 /* Events to excite tasks */
 typedef enum eTask_Test{ Error, Entry, Exit } eTask_Test_t;
 
+typedef struct
+{
+	eTask_Test_t type;
+	uint32_t id;
+} TestStimulus;
+
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
@@ -82,8 +88,8 @@ const char *pcTextForTask_Test_TEST_X				= "[TEST] Corriendo Tarea - Variante: "
 const char *pcTextForTask_Test_priority			 	= "  <=> Tesk Test - priority:";
 const char *pcTextForTask_Test_eTask_TestArrayIndex	= "  <=> Task Test - eTask_TestArray Index :";
 
-const char *pcTextForTask_Test_SignalEntry 			= "[TEST] Entro un auto\r\n";
-const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto\r\n";
+const char *pcTextForTask_Test_SignalEntry 			= "[TEST] Entro un auto por";
+const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto por";
 const char *pcTextForTask_Test_SignalError			= "  <=> Task Test - Signal: Error  <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS			= "  <=> Task Test - Wait:   5000mS <=>\r\n\n";
 
@@ -97,6 +103,19 @@ static char* entry_to_str(EntryType entry) {
 			return "ENTRADA_B";
 		case ENTRADA_C:
 			return "ENTRADA_C";
+		default:
+			return "";
+	}
+}
+
+static char* exit_to_str(ExitType exit) {
+	 switch (exit) {
+		case SALIDA_A:
+			return "SALIDA_A";
+		case SALIDA_B:
+			return "SALIDA_B";
+		case SALIDA_C:
+			return "SALIDA_C";
 		default:
 			return "";
 	}
@@ -122,6 +141,16 @@ const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Exit, Exit };
 #if( TEST_X == 3 )
 /* Array of events to excite tasks */
 const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Entry, Entry, Exit, Exit, Exit, Exit };
+const TestStimulus eTask_TestStimulusArray[] =
+{
+		{.type = Entry, .id = 0},
+		{.type = Entry, .id = 0},
+		{.type = Entry, .id = 0},
+		{.type = Entry, .id = 0},
+		{.type = Exit, .id = 0},
+		{.type = Exit, .id = 0},
+		{.type = Exit, .id = 0},
+		{.type = Exit, .id = 0},};
 #endif
 
 #if( TEST_X == 4 )
@@ -172,21 +201,22 @@ void vTask_Test( void *pvParameters )
 	while( 1 )
 	{
 		/* Scanning the array of events to excite tasks */
-		for ( i = 0; i < (sizeof(eTask_TestArray)/sizeof(eTask_Test_t)); i++ )
+		for ( i = 0; i < (sizeof(eTask_TestStimulusArray)/sizeof(TestStimulus)); i++ )
 		{
-			switch( eTask_TestArray[i] ) {
+			const uint32_t ID = eTask_TestStimulusArray[i].id;
+			switch( eTask_TestStimulusArray[i].type ) {
 
 	    		case Entry:
 				    /* 'Give' the semaphore to unblock the task A. */
-		    		vPrintString( pcTextForTask_Test_SignalEntry );
-					xSemaphoreGive( EntrySemaphores[0] );
+	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ID));
+					xSemaphoreGive( EntrySemaphores[ID] );
 	    			break;
 
 	    		case Exit:
-
 				    /* 'Give' the semaphore to unblock the task B. */
-		    		vPrintString( pcTextForTask_Test_SignalExit );
-		    		xSemaphoreGive( ExitSemaphores[0] );
+//		    		vPrintString( pcTextForTask_Test_SignalExit );
+		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(ID) );
+		    		xSemaphoreGive( ExitSemaphores[ID] );
 	    			break;
 
 		    	case Error:
