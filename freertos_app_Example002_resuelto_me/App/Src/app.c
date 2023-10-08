@@ -82,8 +82,8 @@ xSemaphoreHandle ExitSemaphores[TOTAL_SALIDAS];
 xSemaphoreHandle xMutex;
 
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
-xTaskHandle vTask_AHandle;
-xTaskHandle vTask_BHandle;
+xTaskHandle EntryTasks[TOTAL_ENTRADAS];
+xTaskHandle ExitTasks[TOTAL_SALIDAS];
 xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
@@ -213,22 +213,22 @@ void appInit( void )
 
     /* Task A thread at priority 2 */
     ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
-					   "Task A",					/* Text name for the task. This is to facilitate debugging only. */
+					   entry_to_str(ENTRADA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
 					   &ENTRY_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
-					   &vTask_AHandle );				/* We are using a variable as task handle.	*/
+					   &EntryTasks[ENTRADA_A] );				/* We are using a variable as task handle.	*/
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
     /* Task B thread at priority 2 */
     ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
-					   "Task B",					/* Text name for the task. This is to facilitate debugging only. */
+					   exit_to_str(SALIDA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
 					   &EXIT_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
-					   &vTask_BHandle );				/* We are using a variable as task handle.	*/
+					   &ExitTasks[SALIDA_A] );				/* We are using a variable as task handle.	*/
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );

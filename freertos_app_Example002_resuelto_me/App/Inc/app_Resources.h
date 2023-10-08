@@ -94,8 +94,8 @@ extern xSemaphoreHandle ExitSemaphores[TOTAL_SALIDAS];
 extern xSemaphoreHandle xMutex;
 
 /* Used to hold the handle of Tasks. */
-extern xTaskHandle vTask_AHandle;
-extern xTaskHandle vTask_BHandle;
+extern xTaskHandle EntryTasks[TOTAL_ENTRADAS];
+extern xTaskHandle ExitTasks[TOTAL_SALIDAS];
 extern xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
