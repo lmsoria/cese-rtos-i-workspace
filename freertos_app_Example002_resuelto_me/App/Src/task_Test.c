@@ -73,7 +73,11 @@ typedef enum eTask_Test{ Error, Entry, Exit } eTask_Test_t;
 typedef struct
 {
 	eTask_Test_t type;
-	uint32_t id;
+	union
+	{
+		EntryType entry;
+		ExitType exit;
+	} id;
 } TestStimulus;
 
 // ------ internal functions declaration -------------------------------
@@ -92,8 +96,6 @@ const char *pcTextForTask_Test_SignalEntry 			= "[TEST] Entro un auto por";
 const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto por";
 const char *pcTextForTask_Test_SignalError			= "  <=> Task Test - Signal: Error  <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS			= "  <=> Task Test - Wait:   5000mS <=>\r\n\n";
-
-
 
 static char* entry_to_str(EntryType entry) {
 	 switch (entry) {
@@ -143,14 +145,15 @@ const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Exit, Exit };
 const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Entry, Entry, Exit, Exit, Exit, Exit };
 const TestStimulus eTask_TestStimulusArray[] =
 {
-		{.type = Entry, .id = 0},
-		{.type = Entry, .id = 0},
-		{.type = Entry, .id = 0},
-		{.type = Entry, .id = 0},
-		{.type = Exit, .id = 0},
-		{.type = Exit, .id = 0},
-		{.type = Exit, .id = 0},
-		{.type = Exit, .id = 0},};
+		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+};
 #endif
 
 #if( TEST_X == 4 )
@@ -203,20 +206,21 @@ void vTask_Test( void *pvParameters )
 		/* Scanning the array of events to excite tasks */
 		for ( i = 0; i < (sizeof(eTask_TestStimulusArray)/sizeof(TestStimulus)); i++ )
 		{
-			const uint32_t ID = eTask_TestStimulusArray[i].id;
+			const EntryType ENTRY = eTask_TestStimulusArray[i].id.entry;
+			const EntryType EXIT = eTask_TestStimulusArray[i].id.exit;
 			switch( eTask_TestStimulusArray[i].type ) {
 
 	    		case Entry:
 				    /* 'Give' the semaphore to unblock the task A. */
-	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ID));
-					xSemaphoreGive( EntrySemaphores[ID] );
+	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ENTRY));
+					xSemaphoreGive( EntrySemaphores[ENTRY] );
 	    			break;
 
 	    		case Exit:
 				    /* 'Give' the semaphore to unblock the task B. */
 //		    		vPrintString( pcTextForTask_Test_SignalExit );
-		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(ID) );
-		    		xSemaphoreGive( ExitSemaphores[ID] );
+		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
+		    		xSemaphoreGive( ExitSemaphores[EXIT] );
 	    			break;
 
 		    	case Error:
