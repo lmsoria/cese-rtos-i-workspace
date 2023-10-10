@@ -137,6 +137,15 @@ extern QueueHandle_t VehicleQueue;
 
 // ------ external functions declaration -------------------------------
 
+
+char* event_type_to_str(EventType event_type);
+
+char* entry_to_str(EntryType entry);
+
+char* exit_to_str(ExitType exit);
+
+char* vehicle_to_str(VehicleType vehicle_type);
+
 #ifdef __cplusplus
 }
 #endif

@@ -152,7 +152,20 @@ static char exit_semaphores_names[TOTAL_SALIDAS][30] = {0};
 // ------ external data definition -------------------------------------
 
 // ------ internal functions definition --------------------------------
-static char* entry_to_str(EntryType entry) {
+
+// ------ external functions definition --------------------------------
+char* event_type_to_str(EventType event_type) {
+	 switch (event_type) {
+		case ENTRY:
+			return "ENTRY";
+		case EXIT:
+			return "EXIT";
+		default:
+			return "";
+	}
+}
+
+char* entry_to_str(EntryType entry) {
 	 switch (entry) {
 		case ENTRADA_A:
 			return "ENTRADA_A";
@@ -165,7 +178,7 @@ static char* entry_to_str(EntryType entry) {
 	}
 }
 
-static char* exit_to_str(ExitType exit) {
+char* exit_to_str(ExitType exit) {
 	 switch (exit) {
 		case SALIDA_A:
 			return "SALIDA_A";
@@ -177,8 +190,22 @@ static char* exit_to_str(ExitType exit) {
 			return "";
 	}
 }
-// ------ external functions definition --------------------------------
 
+char* vehicle_to_str(VehicleType vehicle_type)
+{
+	 switch (vehicle_type) {
+		case CAR:
+			return "CAR";
+		case VAN:
+			return "VAN";
+		case TRUCK:
+			return "TRUCK";
+		case MOTORCYCLE:
+			return "MOTORCYCLE";
+		default:
+			return "";
+	}
+}
 
 /*------------------------------------------------------------------*/
 /* App Initialization */

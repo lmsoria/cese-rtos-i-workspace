@@ -97,31 +97,7 @@ const char *pcTextForTask_Test_SignalExit			= "[TEST] Salio un auto por";
 const char *pcTextForTask_Test_SignalError			= "  <=> Task Test - Signal: Error  <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS			= "  <=> Task Test - Wait:   5000mS <=>\r\n\n";
 
-static char* entry_to_str(EntryType entry) {
-	 switch (entry) {
-		case ENTRADA_A:
-			return "ENTRADA_A";
-		case ENTRADA_B:
-			return "ENTRADA_B";
-		case ENTRADA_C:
-			return "ENTRADA_C";
-		default:
-			return "";
-	}
-}
 
-static char* exit_to_str(ExitType exit) {
-	 switch (exit) {
-		case SALIDA_A:
-			return "SALIDA_A";
-		case SALIDA_B:
-			return "SALIDA_B";
-		case SALIDA_C:
-			return "SALIDA_C";
-		default:
-			return "";
-	}
-}
 
 #define TEST_X ( 4 )
 
