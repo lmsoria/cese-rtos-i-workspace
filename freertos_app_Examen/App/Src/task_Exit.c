@@ -56,13 +56,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <task_Exit.h>
 
 /* Demo includes. */
 #include "supporting_Functions.h"
 
 /* Application includes. */
 #include "app_Resources.h"
-#include "task_B.h"
 
 // ------ Macros and definitions ---------------------------------------
 
