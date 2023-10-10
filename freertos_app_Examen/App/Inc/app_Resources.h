@@ -63,12 +63,20 @@ extern xSemaphoreHandle xBinarySemaphoreExit_A;
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to...*/
-extern xSemaphoreHandle xMutex;
+extern xSemaphoreHandle xMutexSemaphoreTask_A;
+
+extern xSemaphoreHandle xCountingSemaphoreTask_A;
 
 /* Used to hold the handle of Tasks. */
 extern xTaskHandle vTask_A_Entry_Handle;
 extern xTaskHandle vTask_A_Exit_Handle;
 extern xTaskHandle vTask_TestHandle;
+
+
+
+/* Task Entry/Exit Vehicle Counter	*/
+#define lTasksCntMAX	3
+extern uint32_t	lTasksCnt;
 
 // ------ external functions declaration -------------------------------
 

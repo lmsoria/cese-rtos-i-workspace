@@ -75,15 +75,16 @@ uint32_t lTask_BCnt = 0;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_B    			= "  ==> Task    B - Running\r\n";
+static const char *pcTextForTask_A_Exit    			    = "Task A (Exit)  - Running\r\n";
 
-const char *pcTextForTask_B_WaitEntry_B	= "  ==> Task    B - Wait:   Entry_B     \r\n\n";
-const char *pcTextForTask_B_WaitExit_B	= "  ==> Task    B - Wait:   Exit_B      \r\n\n";
+static const char *pcTextForTask_A_lTasksCnt			= "Task A (Exit) | Lugares ocupados: ";
 
-const char *pcTextForTask_B_WaitMutex	= "  ==> Task    B - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_B_SignalMutex	= "  ==> Task    B - Signal: Mutex    ==>\r\n\n";
+static const char *pcTextForTask_A_Exit_WaitExit_A	    = "Task A (Exit) - Espero que salga un auto...\r\n\n";
+static const char *pcTextForTask_A_Exit_SignalContinue 	= "Task A (Exit) | Aviso que hay lugar disponible\r\n\n";
 
-const char *pcTextForTask_B_Wait1500mS	= "  ==> Task    B - Wait:   1500mS - cnt: ";
+
+static const char *pcTextForTask_A_Exit_WaitMutex	    = " Task A (Exit) | Espero que la seccion critica este libre\r\n\n";
+static const char *pcTextForTask_A_Exit_SignalMutex	    = " Task A (Exit) | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -92,29 +93,60 @@ const char *pcTextForTask_B_Wait1500mS	= "  ==> Task    B - Wait:   1500mS - cnt
 // ------ external functions definition --------------------------------
 
 /*------------------------------------------------------------------*/
-/* Task B thread */
-void vTask_B( void *pvParameters )
+/* Task A thread (Exit) */
+void vTask_A_Exit( void *pvParameters )
 {
 	/* Print out the name of this task. */
-	vPrintString( pcTextForTask_B );
+	vPrintString( pcTextForTask_A_Exit );
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
+    xSemaphoreTake( xBinarySemaphoreExit_A, (portTickType) 0 );
     while( 1 )
     {
-    	/* About a 1500 mS delay here */
-		/* Delay for a period.  This time we use a call to vTaskDelay() which
-		 * puts the task into the Blocked state until the delay period has expired.
-		 * The delay period is specified in 'ticks'. */
-    	vPrintStringAndNumber(pcTextForTask_B_Wait1500mS, lTask_BCnt);
-    	vPrintString("\n");
+		/* Use the semaphore to wait for the event.  The task blocks
+         * indefinitely meaning this function call will only return once the
+         * semaphore has been successfully obtained - so there is no need to check
+         * the returned value. */
+    	vPrintString(pcTextForTask_A_Exit_WaitExit_A);
+        xSemaphoreTake( xBinarySemaphoreExit_A, portMAX_DELAY );
+        {
+        	vPrintString("Task A (Exit) | Salio un auto!\r\n");
+        	/* The semaphore is created before the scheduler is started so already
+    		 * exists by the time this task executes.
+    		 *
+    		 * Attempt to take the semaphore, blocking indefinitely if the mutex is not
+    		 * available immediately.  The call to xSemaphoreTake() will only return when
+    		 * the semaphore has been successfully obtained so there is no need to check
+    		 * the return value.  If any other delay period was used then the code must
+    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
+        	vPrintString(pcTextForTask_A_Exit_WaitMutex);
+        	xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
+        	{
+        		/* The following line will only execute once the semaphore has been
+        		 * successfully obtained. */
+        		vPrintString("Task A (Exit) | Entre a la seccion critica\r\n");
 
-		vTaskDelay(1500 / portTICK_RATE_MS);
+        		/* Update Task A & B Counter */
+        		if(lTasksCnt > 0) {
+        			lTasksCnt--;
+        		}
 
-		lTask_BCnt++;
+    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lTasksCnt);
+
+    			/* 'Give' the semaphore to unblock the tasks. */
+    			vPrintString(pcTextForTask_A_Exit_SignalMutex);
+
+        		xSemaphoreGive( xMutexSemaphoreTask_A );
+
+    			/* 'Give' the semaphore to unblock the task A. */
+        		vPrintString(pcTextForTask_A_Exit_SignalContinue);
+   	        	xSemaphoreGive( xCountingSemaphoreTask_A );
+        	}
+        }
 	}
 }
 

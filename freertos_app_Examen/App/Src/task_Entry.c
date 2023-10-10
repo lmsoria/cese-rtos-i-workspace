@@ -75,17 +75,15 @@ uint32_t lTask_ACnt = 0;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-const char *pcTextForTask_A_Entry    				= "Task A (Entry) - Running\r\n";
-const char *pcTextForTask_A_Exit    				= "Task A (Exit)  - Running\r\n";
+static const char *pcTextForTask_A_Entry    			= "Task A (Entry) - Running\r\n";
 
-const char *pcTextForTask_A_WaitEntry_A		= " Task A - Wait:   Entry_A     \r\n\n";
-const char *pcTextForTask_A_WaitExit_A		= " Task A - Wait:   Exit_A      \r\n\n";
+static const char *pcTextForTask_A_Entry_lTasksCnt		= "Task A (Entry) | Lugares Ocupados:";
 
-const char *pcTextForTask_A_WaitMutex		= " Task A - Wait:   Mutex       \r\n\n";
-const char *pcTextForTask_A_SignalMutex		= " Task A - Signal: Mutex    ==>\r\n\n";
+static const char *pcTextForTask_A_Entry_WaitEntry_A	= "Task A (Entry) | Espero que entre un auto...\r\n\n";
+static const char *pcTextForTask_A_Entry_WaitContinue	= "Task A (Entry) | Espero que haya lugar\r\n\n";
 
-const char *pcTextForTask_A_Entry_Wait1500mS	= " Task A (Entry) - Wait:   1500mS - cnt: ";
-const char *pcTextForTask_A_Exit_Wait1500mS		= " Task A (Exit) - Wait:   1500mS - cnt: ";
+static const char *pcTextForTask_A_Entry_WaitMutex		= "Task A (Entry) | Espero que la seccion critica este libre\r\n\n";
+static const char *pcTextForTask_A_Entry_SignalMutex	= "Task A (Entry) | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -106,47 +104,48 @@ void vTask_A_Entry( void *pvParameters )
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
     xSemaphoreTake( xBinarySemaphoreEntry_A, (portTickType) 0 );
-    xSemaphoreTake( xBinarySemaphoreExit_A, (portTickType) 0 );
+
+
+    /* Init Task A & B Counter and Reset Task A Flag	*/
+    lTasksCnt = 0;
+
     while( 1 )
     {
-    	/* About a 1500 mS delay here */
-		/* Delay for a period.  This time we use a call to vTaskDelay() which
-		 * puts the task into the Blocked state until the delay period has expired.
-		 * The delay period is specified in 'ticks'. */
-    	vPrintStringAndNumber(pcTextForTask_A_Entry_Wait1500mS, lTask_ACnt);
-    	vPrintString("\n");
-
-		vTaskDelay(1500 / portTICK_RATE_MS);
-
-		lTask_ACnt++;
-	}
-}
-
-/* Task A thread (Exit) */
-void vTask_A_Exit( void *pvParameters )
-{
-	/* Print out the name of this task. */
-	vPrintString( pcTextForTask_A_Exit );
-
-	/* As per most tasks, this task is implemented within an infinite loop.
-	 *
-	 * Take the semaphore once to start with so the semaphore is empty before the
-	 * infinite loop is entered.  The semaphore was created before the scheduler
-	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( xBinarySemaphoreEntry_A, (portTickType) 0 );
-    xSemaphoreTake( xBinarySemaphoreExit_A, (portTickType) 0 );
-    while( 1 )
-    {
-    	/* About a 1500 mS delay here */
-		/* Delay for a period.  This time we use a call to vTaskDelay() which
-		 * puts the task into the Blocked state until the delay period has expired.
-		 * The delay period is specified in 'ticks'. */
-    	vPrintStringAndNumber(pcTextForTask_A_Exit_Wait1500mS, lTask_ACnt);
-    	vPrintString("\n");
-
-		vTaskDelay(1500 / portTICK_RATE_MS);
-
-		lTask_ACnt++;
+    	vPrintString( pcTextForTask_A_Entry_WaitEntry_A );
+    	if(xSemaphoreTake( xBinarySemaphoreEntry_A, portMAX_DELAY ) == pdTRUE)
+        {
+    		vPrintString("Task A (Entry) | Entro un auto!\r\n");
+			/* Use the semaphore to wait for the event.  The task blocks
+			 * indefinitely meaning this function call will only return once the
+			 * semaphore has been successfully obtained - so there is no need to check
+			 * the returned value. */
+    		vPrintString(pcTextForTask_A_Entry_WaitContinue);
+			xSemaphoreTake( xCountingSemaphoreTask_A, portMAX_DELAY );
+			{
+				vPrintString("Task A (Entry) | Hay lugar disponible!\r\n");
+	    		/* The semaphore is created before the scheduler is started so already
+	    		 * exists by the time this task executes.
+	    		 *
+	    		 * Attempt to take the semaphore, blocking indefinitely if the mutex is not
+	    		 * available immediately.  The call to xSemaphoreTake() will only return when
+	    		 * the semaphore has been successfully obtained so there is no need to check
+	    		 * the return value.  If any other delay period was used then the code must
+	    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
+	        	vPrintString(pcTextForTask_A_Entry_WaitMutex);
+	    		xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
+	        	{
+	    			vPrintString("Task A (Entry) | Entre a la seccion critica\r\n");
+	        		/* The following line will only execute once the semaphore has been
+	        		 * successfully obtained. */
+	        		/* Update Task A & B Counter */
+	    			lTasksCnt++;
+	    			vPrintStringAndNumber( pcTextForTask_A_Entry_lTasksCnt, lTasksCnt);
+	       			/* 'Give' the semaphore to unblock the tasks. */
+	       			vPrintString(pcTextForTask_A_Entry_SignalMutex);
+	       			xSemaphoreGive( xMutexSemaphoreTask_A );
+	        	}
+			}
+        }
 	}
 }
 

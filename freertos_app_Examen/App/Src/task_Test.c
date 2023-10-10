@@ -98,7 +98,7 @@ const eTask_Test_t eTask_TestArray[] = { Error, Exit_B+1, Exit_B+2 };
 
 #if( TEST_X == 1 )
 /* Array of events to excite tasks */
-const eTask_Test_t eTask_TestArray[] = { Entry_A, Exit_A, Entry_A, Exit_A };
+const eTask_Test_t eTask_TestArray[] = { Entry_A, Entry_A, Entry_A, Entry_A, Exit_A, Exit_A, Exit_A, Exit_A };
 #endif
 
 #if( TEST_X == 2 )

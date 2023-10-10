@@ -64,6 +64,9 @@
 
 /* Application & Tasks includes. */
 #include "app.h"
+#include "app_Resources.h"
+#include "task_Entry.h"
+#include "task_Exit.h"
 #include "task_Test.h"
 
 // ------ Macros and definitions ---------------------------------------
@@ -76,12 +79,18 @@ xSemaphoreHandle xBinarySemaphoreExit_A;
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to ........ */
-xSemaphoreHandle xMutex;
+xSemaphoreHandle xMutexSemaphoreTask_A;
+
+/* Counting Semaphore that controls the bridge capacity */
+xSemaphoreHandle xCountingSemaphoreTask_A;
 
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
 xTaskHandle vTask_A_Entry_Handle;
 xTaskHandle vTask_A_Exit_Handle;
 xTaskHandle vTask_TestHandle;
+
+/* Task Entry/Exit Vehicle Counter	*/
+uint32_t	lTasksCnt;
 
 // ------ internal functions declaration -------------------------------
 
@@ -115,15 +124,22 @@ void appInit( void )
 	vQueueAddToRegistry(xBinarySemaphoreEntry_A, "xBinarySemaphoreEntry_A");
     vQueueAddToRegistry(xBinarySemaphoreExit_A,  "xBinarySemaphoreExit_A");
 
-    /* Before a semaphore is used it must be explicitly created.
-     * In this example a mutex semaphore is created. */
-    xMutex = xSemaphoreCreateMutex();
+    // Create Mutex
+    xMutexSemaphoreTask_A = xSemaphoreCreateMutex();
+    // Check the mutex was created successfully.
+    configASSERT( xMutexSemaphoreTask_A !=  NULL );
+    // Add mutex to registry.
+	vQueueAddToRegistry(xMutexSemaphoreTask_A, "xMutexSemaphoreTask_A");
 
-    /* Check the mutex was created successfully. */
-    configASSERT( xMutex !=  NULL );
 
-    /* Add mutex to registry. */
-	vQueueAddToRegistry(xMutex, "xMutex");
+	// Create counting semaphore
+    xCountingSemaphoreTask_A = xSemaphoreCreateCounting(lTasksCntMAX, lTasksCntMAX);
+    // Check the semaphore was created successfully.
+	configASSERT( xCountingSemaphoreTask_A !=  NULL );
+	// Add Counting Semaphore to registry
+	vQueueAddToRegistry(xCountingSemaphoreTask_A, "xCountingSemaphoreTask_A");
+
+
 
     BaseType_t ret;
 

@@ -61,8 +61,6 @@
 
 void vTask_A_Entry( void *pvParameters );
 
-void vTask_A_Exit( void *pvParameters );
-
 #ifdef __cplusplus
 }
 #endif
