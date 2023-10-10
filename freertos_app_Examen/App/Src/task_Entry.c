@@ -112,6 +112,7 @@ void vTask_A_Entry( void *pvParameters )
     while( 1 )
     {
     	vPrintString( pcTextForTask_A_Entry_WaitEntry_A );
+    	// Let's see if the bridge is not at full capacity first
     	if(xSemaphoreTake( xBinarySemaphoreEntry_A, portMAX_DELAY ) == pdTRUE)
         {
     		vPrintString("Task A (Entry) | Entro un auto!\r\n");
