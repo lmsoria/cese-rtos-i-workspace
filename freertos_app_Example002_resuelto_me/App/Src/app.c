@@ -88,6 +88,9 @@ xTaskHandle ExitTasks[TOTAL_SALIDAS];
 xTaskHandle TaskMonitor_Handle;
 xTaskHandle vTask_TestHandle;
 
+// Queue for handling vehicle events
+QueueHandle_t VehicleQueue;
+
 /* Task A & B Counter	*/
 uint32_t	lugares_ocupados;
 
@@ -210,6 +213,15 @@ void appInit( void )
 
     /* Add mutex to registry. */
 	vQueueAddToRegistry(xMutex, "xMutex");
+
+
+    /* Before a queue is used it must be explicitly created. */
+	VehicleQueue = xQueueCreate( 10, sizeof( VehicleEventMsg ) );
+	/* Check the queues was created successfully */
+	configASSERT( VehicleQueue != NULL );
+    /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
+    vQueueAddToRegistry( VehicleQueue, "VehicleQueue" );
+
 
 	BaseType_t ret;
 

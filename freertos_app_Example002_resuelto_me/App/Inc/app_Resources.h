@@ -81,6 +81,31 @@
 	 xSemaphoreHandle* continue_semaphore;
  } ExitTaskData;
 
+typedef enum {
+	ENTRY,
+	EXIT,
+	TOTAL_EVENTS // Keep this value always at the bottom!
+} EventType;
+
+typedef enum {
+	CAR = 0,
+	VAN,
+	TRUCK,
+	MOTORCYCLE,
+	TOTAL_VEHICLES // Keep this value always at the bottom!
+} VehicleType;
+
+typedef struct {
+	uint32_t timestamp;
+	EventType type;
+	VehicleType vehicle_type;
+	union
+	{
+		EntryType entry;
+		ExitType exit;
+	} id;
+ } VehicleEventMsg;
+
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
@@ -102,6 +127,8 @@ extern xTaskHandle vTask_TestHandle;
 /* Task A & B Counter	*/
 #define lTasksCntMAX	3
 extern uint32_t	lugares_ocupados;
+
+extern QueueHandle_t VehicleQueue;
 
 // ------ external functions declaration -------------------------------
 
