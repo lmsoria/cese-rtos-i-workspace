@@ -36,11 +36,28 @@
 
 static const char *pcTextForTask_Monitor = " | Running\r\n\n";
 
-const char *pcTextForTask_Monitor_Wait1000mS = " | Wait: 1000mS\r\n\n";
+static const char *pcTextForTask_Monitor_message_received = " | Message received!\r\n\n";
 
 // ------ external data definition -------------------------------------
 
 // ------ internal functions definition --------------------------------
+
+static void print_message_data(VehicleEventMsg* msg)
+{
+	/* Print the string, using a critical section as a crude method of mutual
+	 * exclusion. */
+	taskENTER_CRITICAL();
+	{
+		printf( "---------- [Message Data] ----------\r\n");
+		printf( "\t> timestamp: %ld\r\n", msg->timestamp);
+		printf( "\t> type: %s\r\n", event_type_to_str(msg->type));
+		printf( "\t> vehicle_type: %s\r\n", vehicle_to_str(msg->vehicle_type));
+		printf( "\t> id: %s\r\n", (msg->type == ENTRY ? entry_to_str(msg->id.entry) : exit_to_str(msg->id.exit)));
+		printf( "------------------------------------\r\n");
+		fflush( stdout );
+	}
+	taskEXIT_CRITICAL();
+}
 
 // ------ external functions definition --------------------------------
 
@@ -50,12 +67,18 @@ void vTaskMonitor( void *pvParameters )
 {
 	MonitorTaskData* const DATA = (MonitorTaskData*)(pvParameters);
 
+	const QueueHandle_t MESSAGE_QUEUE = *DATA->message_queue;
+
 	vPrintTwoStrings(DATA->name, pcTextForTask_Monitor);
+
+	VehicleEventMsg last_message;
 
 	while(1)
 	{
-		vPrintTwoStrings(DATA->name, pcTextForTask_Monitor_Wait1000mS);
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		if(xQueueReceive( MESSAGE_QUEUE, &last_message, portMAX_DELAY ) == pdPASS) {
+			vPrintTwoStrings(DATA->name, pcTextForTask_Monitor_message_received);
+			print_message_data(&last_message);
+		}
 	}
 }
 

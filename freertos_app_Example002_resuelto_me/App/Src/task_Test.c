@@ -149,6 +149,8 @@ const TestStimulus eTask_TestStimulusArray[] =
 		{.type = Exit, .id.exit = SALIDA_A},
 		{.type = Exit, .id.exit = SALIDA_A},
 };
+
+
 #endif
 
 #if( TEST_X == 5 )
@@ -169,6 +171,12 @@ void vTask_Test( void *pvParameters )
 	uint32_t i = TEST_X;
 	portTickType xLastWakeTime;
 	UBaseType_t uxPriority;
+
+	VehicleEventMsg msg;
+
+	msg.type = ENTRY;
+	msg.vehicle_type = TRUCK;
+	msg.id.entry = ENTRADA_B;
 
 	/* Print out the name, parameters and TEST_X of this task. */
 	vPrintStringAndNumber( pcTextForTask_Test_TEST_X, i);
@@ -202,14 +210,19 @@ void vTask_Test( void *pvParameters )
 
 	    		case Entry:
 				    /* 'Give' the semaphore to unblock the task A. */
-	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ENTRY));
-					xSemaphoreGive( EntrySemaphores[ENTRY] );
+//	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ENTRY));
+//					xSemaphoreGive( EntrySemaphores[ENTRY] );
+	    			msg.timestamp = xTaskGetTickCount();
+	    			xQueueSend(VehicleQueue, (void*)&msg, 0);
 	    			break;
 
 	    		case Exit:
 				    /* 'Give' the semaphore to unblock the task B. */
-		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
-		    		xSemaphoreGive( ExitSemaphores[EXIT] );
+//		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
+//		    		xSemaphoreGive( ExitSemaphores[EXIT] );
+	    			msg.timestamp = xTaskGetTickCount();
+	    			msg.vehicle_type = VAN;
+	    			xQueueSend(VehicleQueue, (void*)&msg, 0);
 	    			break;
 
 		    	case Error:
