@@ -191,7 +191,8 @@ void appInit( void )
 
     /* Before a semaphore is used it must be explicitly created.
      * In this example a binary semaphore is created. */
-    vSemaphoreCreateBinary( xBinarySemaphoreContinue );
+//    vSemaphoreCreateBinary( xBinarySemaphoreContinue );
+    xBinarySemaphoreContinue = xSemaphoreCreateCounting(lTasksCntMAX, lTasksCntMAX);
 
     /* Check the semaphore was created successfully. */
 	configASSERT( xBinarySemaphoreContinue !=  NULL );
@@ -215,9 +216,20 @@ void appInit( void )
     ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
 					   entry_to_str(ENTRADA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   &ENTRY_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
+					   &ENTRY_TASK_DATA_ARRAY[ENTRADA_A],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &EntryTasks[ENTRADA_A] );				/* We are using a variable as task handle.	*/
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+    /* Task A thread at priority 2 */
+    ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
+					   entry_to_str(ENTRADA_B),					/* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
+					   &ENTRY_TASK_DATA_ARRAY[ENTRADA_B],						/* We are not using the task parameter.		*/
+					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
+					   &EntryTasks[ENTRADA_B] );				/* We are using a variable as task handle.	*/
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
@@ -226,7 +238,7 @@ void appInit( void )
     ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
 					   exit_to_str(SALIDA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   &EXIT_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
+					   &EXIT_TASK_DATA_ARRAY[SALIDA_A],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &ExitTasks[SALIDA_A] );				/* We are using a variable as task handle.	*/
 
