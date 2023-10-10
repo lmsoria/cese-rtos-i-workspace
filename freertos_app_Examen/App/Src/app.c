@@ -72,23 +72,21 @@
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
 xSemaphoreHandle xBinarySemaphoreEntry_A;
-xSemaphoreHandle xBinarySemaphoreEntry_B;
 xSemaphoreHandle xBinarySemaphoreExit_A;
-xSemaphoreHandle xBinarySemaphoreExit_B;
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to ........ */
 xSemaphoreHandle xMutex;
 
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
-xTaskHandle vTask_AHandle;
-xTaskHandle vTask_BHandle;
+xTaskHandle vTask_A_Entry_Handle;
+xTaskHandle vTask_A_Exit_Handle;
 xTaskHandle vTask_TestHandle;
 
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
-const char *pcTextForMain = "freertos_app_Example001 is running: narrow vehicular bridge\r\n\n";
+const char *pcTextForMain = "Examen is running: narrow vehicular bridge\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -109,22 +107,13 @@ void appInit( void )
     vSemaphoreCreateBinary( xBinarySemaphoreEntry_A );
     vSemaphoreCreateBinary( xBinarySemaphoreExit_A  );
 
-    vSemaphoreCreateBinary( xBinarySemaphoreEntry_B );
-    vSemaphoreCreateBinary( xBinarySemaphoreExit_B  );
-
     /* Check the semaphore was created successfully. */
 	configASSERT( xBinarySemaphoreEntry_A !=  NULL );
 	configASSERT( xBinarySemaphoreExit_A  !=  NULL );
 
-	configASSERT( xBinarySemaphoreEntry_B !=  NULL );
-	configASSERT( xBinarySemaphoreExit_B  !=  NULL );
-
     /* Add semaphore to registry. */
 	vQueueAddToRegistry(xBinarySemaphoreEntry_A, "xBinarySemaphoreEntry_A");
     vQueueAddToRegistry(xBinarySemaphoreExit_A,  "xBinarySemaphoreExit_A");
-
-    vQueueAddToRegistry(xBinarySemaphoreEntry_B, "xBinarySemaphoreEntry_B");
-    vQueueAddToRegistry(xBinarySemaphoreExit_B,  "xBinarySemaphoreExit_B");
 
     /* Before a semaphore is used it must be explicitly created.
      * In this example a mutex semaphore is created. */
@@ -139,34 +128,34 @@ void appInit( void )
     BaseType_t ret;
 
     /* Task A thread at priority 2 */
-    ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
-					   "Task A",					/* Text name for the task. This is to facilitate debugging only. */
-					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   NULL,						/* We are not using the task parameter.		*/
-					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
-					   &vTask_AHandle );			/* We are using a variable as task handle.	*/
+    ret = xTaskCreate( vTask_A_Entry,				   /* Pointer to the function thats implement the task. */
+					   "Task A (Entry)",			   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   NULL,						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &vTask_A_Entry_Handle );		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
     /* Task B thread at priority 2 */
-    ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
-					   "Task B",					/* Text name for the task. This is to facilitate debugging only. */
-					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   NULL,						/* We are not using the task parameter.		*/
-					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
-					   &vTask_BHandle );			/* We are using a variable as task handle.	*/
+    ret = xTaskCreate( vTask_A_Exit,				   /* Pointer to the function thats implement the task. */
+					   "Task A (Exit)",				   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   NULL,						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &vTask_A_Exit_Handle );		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
 	/* Task Test at priority 1, periodically excites the other tasks */
-    ret = xTaskCreate( vTask_Test,					/* Pointer to the function thats implement the task. */
-					   "Task Test",					/* Text name for the task. This is to facilitate debugging only. */
-					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   NULL,						/* We are not using the task parameter.		*/
-					   (tskIDLE_PRIORITY + 1UL),	/* This task will run at priority 2. 		*/
-					   &vTask_TestHandle );			/* We are using a variable as task handle.	*/
+    ret = xTaskCreate( vTask_Test,					   /* Pointer to the function thats implement the task. */
+					   "Task Test",					   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   NULL,						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 1UL),	   /* This task will run at priority 2. */
+					   &vTask_TestHandle );			   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );

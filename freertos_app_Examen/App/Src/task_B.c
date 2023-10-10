@@ -103,9 +103,6 @@ void vTask_B( void *pvParameters )
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-	xSemaphoreTake( xBinarySemaphoreEntry_B, (portTickType) 0 );
-    xSemaphoreTake( xBinarySemaphoreExit_B, (portTickType) 0 );
-
     while( 1 )
     {
     	/* About a 1500 mS delay here */
