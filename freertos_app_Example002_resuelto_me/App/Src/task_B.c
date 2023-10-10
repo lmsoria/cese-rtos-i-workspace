@@ -83,8 +83,8 @@ const char *pcTextForTask_B_lTasksCnt			= "\t>Lugares ocupados:";
 const char *pcTextForTask_B_WaitExit			= " | Espero que salga un auto...\r\n\n";
 const char *pcTextForTask_B_SignalContinue   	= " | Aviso que hay lugar disponible\r\n\n";
 
-const char *pcTextForTask_B_WaitMutex        	= " | Espero que la sección critica este libre\r\n\n";
-const char *pcTextForTask_B_SignalMutex      	= " | Fin sección critica. Devuelvo el Mutex\r\n\n";
+const char *pcTextForTask_B_WaitMutex        	= " | Espero que la seccion critica este libre\r\n\n";
+const char *pcTextForTask_B_SignalMutex      	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
