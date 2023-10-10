@@ -82,10 +82,10 @@ const char *pcTextForTask_Test_TEST_X				= "  <=> Task Test - TEST_X : ";
 const char *pcTextForTask_Test_priority			 	= "  <=> Tesk Test - priority:";
 const char *pcTextForTask_Test_eTask_TestArrayIndex	= "  <=> Task Test - eTask_TestArray Index :";
 
-const char *pcTextForTask_Test_SignalEntry_A    	= "  <=> Task Test - Signal: Entry_A  <=>\r\n";
-const char *pcTextForTask_Test_SignalEntry_B    	= "  <=> Task Test - Signal: Entry_B  <=>\r\n";
-const char *pcTextForTask_Test_SignalExit_A     	= "  ==> Task Test - Signal: Exit_A   <=>\r\n";
-const char *pcTextForTask_Test_SignalExit_B     	= "  ==> Task Test - Signal: Exit_B   <=>\r\n";
+const char *pcTextForTask_Test_SignalEntry_A    	= "[TEST] - Entro un auto por A\r\n";
+const char *pcTextForTask_Test_SignalEntry_B    	= "[TEST] - Entro un auto por B\r\n";
+const char *pcTextForTask_Test_SignalExit_A     	= "[TEST] - Salio un auto por A\r\n";
+const char *pcTextForTask_Test_SignalExit_B     	= "[TEST] - Salio un auto por B\r\n";
 const char *pcTextForTask_Test_SignalError  		= "  <=> Task Test - Signal: Error    <=>\r\n";
 const char *pcTextForTask_Test_Wait5000mS       	= "  <=> Task Test - Wait:   5000mS   <=>\r\n\n";
 
@@ -182,26 +182,24 @@ void vTask_Test( void *pvParameters )
 			vPrintStringAndNumber( pcTextForTask_Test_eTask_TestArrayIndex, i);
 
 			switch( eTask_TestArray[i] ) {
-
 	    		case Entry_A:
-
+	    			vPrintString( pcTextForTask_Test_SignalEntry_A );
+	    			xSemaphoreGive(xBinarySemaphoreEntry_A);
 	    			break;
 
 	    		case Entry_B:
-
 	    			break;
 
 	    		case Exit_A:
-
+	    			vPrintString( pcTextForTask_Test_SignalExit_A );
+	    			xSemaphoreGive(xBinarySemaphoreExit_A);
 	    			break;
 
 	    		case Exit_B:
-
 	    			break;
 
 		    	case Error:
 		    	default:
-
 		    		vPrintString( pcTextForTask_Test_SignalError );
 		    		break;
 		    }
