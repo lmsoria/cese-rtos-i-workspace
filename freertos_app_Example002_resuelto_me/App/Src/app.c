@@ -156,10 +156,12 @@ static char exit_semaphores_names[TOTAL_SALIDAS][30] = {0};
 // ------ external functions definition --------------------------------
 char* event_type_to_str(EventType event_type) {
 	 switch (event_type) {
-		case ENTRY:
+		case EVENT_ENTRY:
 			return "ENTRY";
-		case EXIT:
+		case EVENT_EXIT:
 			return "EXIT";
+		case EVENT_ERROR:
+			return "ERROR";
 		default:
 			return "";
 	}

@@ -82,8 +82,9 @@
  } ExitTaskData;
 
 typedef enum {
-	ENTRY,
-	EXIT,
+	EVENT_ENTRY,
+	EVENT_EXIT,
+	EVENT_ERROR,
 	TOTAL_EVENTS // Keep this value always at the bottom!
 } EventType;
 

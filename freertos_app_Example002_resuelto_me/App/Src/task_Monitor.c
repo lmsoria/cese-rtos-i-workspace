@@ -52,7 +52,7 @@ static void print_message_data(VehicleEventMsg* msg)
 		printf( "\t> timestamp: %ld\r\n", msg->timestamp);
 		printf( "\t> type: %s\r\n", event_type_to_str(msg->type));
 		printf( "\t> vehicle_type: %s\r\n", vehicle_to_str(msg->vehicle_type));
-		printf( "\t> id: %s\r\n", (msg->type == ENTRY ? entry_to_str(msg->id.entry) : exit_to_str(msg->id.exit)));
+		printf( "\t> id: %s\r\n", (msg->type == EVENT_ENTRY ? entry_to_str(msg->id.entry) : exit_to_str(msg->id.exit)));
 		printf( "------------------------------------\r\n");
 		fflush( stdout );
 	}

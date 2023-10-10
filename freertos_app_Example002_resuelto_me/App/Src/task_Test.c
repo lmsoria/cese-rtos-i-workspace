@@ -72,7 +72,8 @@ typedef enum eTask_Test{ Error, Entry, Exit } eTask_Test_t;
 
 typedef struct
 {
-	eTask_Test_t type;
+	EventType event_type;
+	VehicleType vehicle_type;
 	union
 	{
 		EntryType entry;
@@ -138,16 +139,16 @@ const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Entry, Entry, Entry, Exit
 
 const TestStimulus eTask_TestStimulusArray[] =
 {
-		{.type = Entry, .id.entry = ENTRADA_A},
-		{.type = Entry, .id.entry = ENTRADA_B},
-		{.type = Entry, .id.entry = ENTRADA_A},
-		{.type = Entry, .id.entry = ENTRADA_B},
-		{.type = Entry, .id.entry = ENTRADA_A},
-		{.type = Exit, .id.exit = SALIDA_B},
-		{.type = Exit, .id.exit = SALIDA_B},
-		{.type = Exit, .id.exit = SALIDA_A},
-		{.type = Exit, .id.exit = SALIDA_A},
-		{.type = Exit, .id.exit = SALIDA_A},
+		{.event_type = EVENT_ENTRY, .vehicle_type = CAR, .id.entry = ENTRADA_A},
+		{.event_type = EVENT_ENTRY, .vehicle_type = CAR, .id.entry = ENTRADA_B},
+		{.event_type = EVENT_ENTRY, .vehicle_type = CAR, .id.entry = ENTRADA_A},
+		{.event_type = EVENT_ENTRY, .vehicle_type = CAR, .id.entry = ENTRADA_B},
+		{.event_type = EVENT_ENTRY, .vehicle_type = CAR, .id.entry = ENTRADA_A},
+		{.event_type = EVENT_EXIT, .vehicle_type = CAR, .id.exit = SALIDA_B},
+		{.event_type = EVENT_EXIT, .vehicle_type = CAR, .id.exit = SALIDA_B},
+		{.event_type = EVENT_EXIT, .vehicle_type = CAR, .id.exit = SALIDA_A},
+		{.event_type = EVENT_EXIT, .vehicle_type = CAR, .id.exit = SALIDA_A},
+		{.event_type = EVENT_EXIT, .vehicle_type = CAR, .id.exit = SALIDA_A},
 };
 
 
@@ -173,10 +174,6 @@ void vTask_Test( void *pvParameters )
 	UBaseType_t uxPriority;
 
 	VehicleEventMsg msg;
-
-	msg.type = ENTRY;
-	msg.vehicle_type = TRUCK;
-	msg.id.entry = ENTRADA_B;
 
 	/* Print out the name, parameters and TEST_X of this task. */
 	vPrintStringAndNumber( pcTextForTask_Test_TEST_X, i);
@@ -206,28 +203,31 @@ void vTask_Test( void *pvParameters )
 		{
 			const EntryType ENTRY = eTask_TestStimulusArray[i].id.entry;
 			const ExitType EXIT = eTask_TestStimulusArray[i].id.exit;
-			switch( eTask_TestStimulusArray[i].type ) {
 
-	    		case Entry:
+			msg.timestamp = xTaskGetTickCount();
+			msg.type = eTask_TestStimulusArray[i].event_type;
+			msg.vehicle_type = eTask_TestStimulusArray[i].vehicle_type;
+
+			switch( eTask_TestStimulusArray[i].event_type ) {
+
+	    		case EVENT_ENTRY:
 				    /* 'Give' the semaphore to unblock the task A. */
-//	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ENTRY));
-//					xSemaphoreGive( EntrySemaphores[ENTRY] );
-	    			msg.timestamp = xTaskGetTickCount();
+	    			vPrintTwoStrings( pcTextForTask_Test_SignalEntry, entry_to_str(ENTRY));
+					xSemaphoreGive( EntrySemaphores[ENTRY] );
+	    			msg.id.entry = ENTRY;
 	    			xQueueSend(VehicleQueue, (void*)&msg, 0);
 	    			break;
 
-	    		case Exit:
+	    		case EVENT_EXIT:
 				    /* 'Give' the semaphore to unblock the task B. */
-//		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
-//		    		xSemaphoreGive( ExitSemaphores[EXIT] );
-	    			msg.timestamp = xTaskGetTickCount();
-	    			msg.vehicle_type = VAN;
+		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
+		    		xSemaphoreGive( ExitSemaphores[EXIT] );
+	    			msg.id.entry = EXIT;
 	    			xQueueSend(VehicleQueue, (void*)&msg, 0);
 	    			break;
 
-		    	case Error:
+	    		case EVENT_ERROR:
 		    	default:
-
 		    		vPrintString( pcTextForTask_Test_SignalError );
 		    		break;
 		    }
