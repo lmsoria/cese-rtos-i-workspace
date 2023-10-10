@@ -34,9 +34,9 @@
 
 // ------ internal data definition -------------------------------------
 
-static const char *pcTextForTask_Monitor = "[MONITOR] Running\r\n\n";
+static const char *pcTextForTask_Monitor = " | Running\r\n\n";
 
-const char *pcTextForTask_Monitor_Wait1000mS = "[MONITOR] Wait: 1000mS\r\n\n";
+const char *pcTextForTask_Monitor_Wait1000mS = " | Wait: 1000mS\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -48,11 +48,13 @@ const char *pcTextForTask_Monitor_Wait1000mS = "[MONITOR] Wait: 1000mS\r\n\n";
 /* Task Monitor thread */
 void vTaskMonitor( void *pvParameters )
 {
-	vPrintString(pcTextForTask_Monitor);
+	MonitorTaskData* const DATA = (MonitorTaskData*)(pvParameters);
+
+	vPrintTwoStrings(DATA->name, pcTextForTask_Monitor);
 
 	while(1)
 	{
-		vPrintString(pcTextForTask_Monitor_Wait1000mS);
+		vPrintTwoStrings(DATA->name, pcTextForTask_Monitor_Wait1000mS);
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }

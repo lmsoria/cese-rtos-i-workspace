@@ -106,6 +106,11 @@ typedef struct {
 	} id;
  } VehicleEventMsg;
 
+typedef struct {
+	char name[30];
+	QueueHandle_t* message_queue;
+} MonitorTaskData;
+
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */

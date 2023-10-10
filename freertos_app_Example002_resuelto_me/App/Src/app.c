@@ -132,6 +132,14 @@ ExitTaskData EXIT_TASK_DATA_ARRAY[TOTAL_SALIDAS] =
 	},
 };
 
+MonitorTaskData MONITOR_TASK_DATA_ARRAY[1] =
+{
+	[0] = {
+		.name = "Monitor",
+		.message_queue = &VehicleQueue,
+	},
+};
+
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
@@ -273,8 +281,8 @@ void appInit( void )
     ret = xTaskCreate( vTaskMonitor,				   /* Pointer to the function thats implement the task. */
 					   "Task Monitor",				   /* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
-					   NULL,						   /* We are not using the task parameter. */
-					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &MONITOR_TASK_DATA_ARRAY[0],						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 1UL),	   /* This task will run at priority 1. */
 					   &TaskMonitor_Handle);		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
