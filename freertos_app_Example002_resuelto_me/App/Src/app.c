@@ -245,6 +245,20 @@ void appInit( void )
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
+
+
+    /* Task B thread at priority 2 */
+    ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
+					   exit_to_str(SALIDA_B),					/* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
+					   &EXIT_TASK_DATA_ARRAY[SALIDA_B],						/* We are not using the task parameter.		*/
+					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
+					   &ExitTasks[SALIDA_B] );				/* We are using a variable as task handle.	*/
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+
 	/* Task Test at priority 1, periodically excites the other tasks */
     ret = xTaskCreate( vTask_Test,					/* Pointer to the function thats implement the task. */
 					   "Task Test",					/* Text name for the task. This is to facilitate debugging only. */
