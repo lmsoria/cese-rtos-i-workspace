@@ -78,13 +78,13 @@ uint32_t lTask_AFlag;
  * tasks are executing. */
 const char *pcTextForTask_A    				= " Running\r\n";
 
-const char *pcTextForTask_A_lTasksCnt		= "> Lugares ocupados:";
+const char *pcTextForTask_A_lTasksCnt		= "\t> Lugares ocupados:";
 
-const char *pcTextForTask_A_WaitEntry		= " | Wait:   Entry\r\n\n";
-const char *pcTextForTask_A_WaitContinue	= " | Wait:   Continue\r\n\n";
+const char *pcTextForTask_A_WaitEntry		= " | Espero que entre un auto...\r\n\n";
+const char *pcTextForTask_A_WaitContinue	= " | Espero que haya lugar\r\n\n";
 
-const char *pcTextForTask_A_WaitMutex    	= " | Wait:   Mutex\r\n\n";
-const char *pcTextForTask_A_SignalMutex  	= " | Signal: Mutex\r\n\n";
+const char *pcTextForTask_A_WaitMutex    	= " | Espero que la seccion critica este libre\r\n\n";
+const char *pcTextForTask_A_SignalMutex  	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -125,6 +125,7 @@ void vTask_A( void *pvParameters )
     	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitEntry);
     	if(xSemaphoreTake( ENTRY_SEMAPHORE, portMAX_DELAY ) == pdTRUE)
         {
+    		vPrintTwoStrings(DATA->name, "Entro un auto!\r\n");
 			/* Use the semaphore to wait for the event.  The task blocks
 			 * indefinitely meaning this function call will only return once the
 			 * semaphore has been successfully obtained - so there is no need to check
@@ -132,6 +133,7 @@ void vTask_A( void *pvParameters )
     		vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitContinue);
 			xSemaphoreTake( CONTINUE_SEMAPHORE, portMAX_DELAY );
 			{
+				vPrintTwoStrings(DATA->name, "Hay lugar disponible!\r\n");
 	    		/* The semaphore is created before the scheduler is started so already
 	    		 * exists by the time this task executes.
 	    		 *
@@ -143,6 +145,7 @@ void vTask_A( void *pvParameters )
 	        	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitMutex);
 	    		xSemaphoreTake( xMutex, portMAX_DELAY );
 	        	{
+	    			vPrintTwoStrings(DATA->name, "Entre a la seccion critica\r\n");
 	        		/* The following line will only execute once the semaphore has been
 	        		 * successfully obtained. */
 	        		/* Update Task A & B Counter */
