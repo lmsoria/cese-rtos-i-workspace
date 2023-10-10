@@ -85,11 +85,11 @@ xSemaphoreHandle xMutex;
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
 xTaskHandle EntryTasks[TOTAL_ENTRADAS];
 xTaskHandle ExitTasks[TOTAL_SALIDAS];
+xTaskHandle TaskMonitor_Handle;
 xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
 uint32_t	lugares_ocupados;
-
 
 EntryTaskData ENTRY_TASK_DATA_ARRAY[TOTAL_ENTRADAS] =
 {
@@ -246,8 +246,6 @@ void appInit( void )
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
 
-
-
     /* Task B thread at priority 2 */
     ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
 					   exit_to_str(SALIDA_B),					/* Text name for the task. This is to facilitate debugging only. */
@@ -255,6 +253,17 @@ void appInit( void )
 					   &EXIT_TASK_DATA_ARRAY[SALIDA_B],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &ExitTasks[SALIDA_B] );				/* We are using a variable as task handle.	*/
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+    /* Task Monitor thread at priority 2 */
+    ret = xTaskCreate( vTaskMonitor,				   /* Pointer to the function thats implement the task. */
+					   "Task Monitor",				   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   NULL,						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &TaskMonitor_Handle);		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );

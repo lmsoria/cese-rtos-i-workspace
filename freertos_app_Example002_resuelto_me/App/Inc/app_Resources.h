@@ -96,6 +96,7 @@ extern xSemaphoreHandle xMutex;
 /* Used to hold the handle of Tasks. */
 extern xTaskHandle EntryTasks[TOTAL_ENTRADAS];
 extern xTaskHandle ExitTasks[TOTAL_SALIDAS];
+extern xTaskHandle TaskMonitor_Handle;
 extern xTaskHandle vTask_TestHandle;
 
 /* Task A & B Counter	*/
