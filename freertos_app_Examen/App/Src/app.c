@@ -144,7 +144,7 @@ void appInit( void )
     BaseType_t ret;
 
     /* Task A thread at priority 2 */
-    ret = xTaskCreate( vTask_A_Entry,				   /* Pointer to the function thats implement the task. */
+    ret = xTaskCreate( vTask_X_Entry,				   /* Pointer to the function thats implement the task. */
 					   "Task A (Entry)",			   /* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
 					   NULL,						   /* We are not using the task parameter. */
