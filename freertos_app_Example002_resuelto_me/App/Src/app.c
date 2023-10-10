@@ -65,6 +65,7 @@
 #include "app_Resources.h"
 #include "task_A.h"
 #include "task_B.h"
+#include "task_Monitor.h"
 #include "task_Test.h"
 
 // ------ Macros and definitions ---------------------------------------
