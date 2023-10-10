@@ -146,9 +146,9 @@ const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Entry, Entry, Exit, Exit,
 const TestStimulus eTask_TestStimulusArray[] =
 {
 		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_B},
 		{.type = Entry, .id.entry = ENTRADA_A},
-		{.type = Entry, .id.entry = ENTRADA_A},
-		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_B},
 		{.type = Exit, .id.exit = SALIDA_A},
 		{.type = Exit, .id.exit = SALIDA_A},
 		{.type = Exit, .id.exit = SALIDA_A},
