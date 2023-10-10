@@ -123,7 +123,7 @@ static char* exit_to_str(ExitType exit) {
 	}
 }
 
-#define TEST_X ( 3 )
+#define TEST_X ( 4 )
 
 #if( TEST_X == 0 )
 /* Array of events to excite tasks */
@@ -159,6 +159,18 @@ const TestStimulus eTask_TestStimulusArray[] =
 #if( TEST_X == 4 )
 /* Array of events to excite tasks */
 const eTask_Test_t eTask_TestArray[] = { Entry, Entry, Entry, Entry, Entry, Exit, Exit, Exit, Exit, Exit };
+
+const TestStimulus eTask_TestStimulusArray[] =
+{
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Entry, .id.entry = ENTRADA_B},
+		{.type = Entry, .id.entry = ENTRADA_A},
+		{.type = Entry, .id.entry = ENTRADA_B},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+		{.type = Exit, .id.exit = SALIDA_A},
+};
 #endif
 
 #if( TEST_X == 5 )
@@ -207,7 +219,7 @@ void vTask_Test( void *pvParameters )
 		for ( i = 0; i < (sizeof(eTask_TestStimulusArray)/sizeof(TestStimulus)); i++ )
 		{
 			const EntryType ENTRY = eTask_TestStimulusArray[i].id.entry;
-			const EntryType EXIT = eTask_TestStimulusArray[i].id.exit;
+			const ExitType EXIT = eTask_TestStimulusArray[i].id.exit;
 			switch( eTask_TestStimulusArray[i].type ) {
 
 	    		case Entry:
@@ -218,7 +230,6 @@ void vTask_Test( void *pvParameters )
 
 	    		case Exit:
 				    /* 'Give' the semaphore to unblock the task B. */
-//		    		vPrintString( pcTextForTask_Test_SignalExit );
 		    		vPrintTwoStrings( pcTextForTask_Test_SignalExit, exit_to_str(EXIT) );
 		    		xSemaphoreGive( ExitSemaphores[EXIT] );
 	    			break;

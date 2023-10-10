@@ -137,30 +137,20 @@ void vTask_B( void *pvParameters )
         		 * successfully obtained. */
 
         		/* Update Task A & B Counter */
-        		lugares_ocupados--;
+        		if(lugares_ocupados > 0) {
+        			lugares_ocupados--;
+        		}
+
     			vPrintStringAndNumber( pcTextForTask_B_lTasksCnt, lugares_ocupados);
 
-   			    /* Check Task A & B Counter	*/
-//    			if( lugares_ocupados == (lTasksCntMAX - 1) )
-//    			{
-//       			    /* Set Task B Flag	*/
-//    				lTask_BFlag = 1;
-//    			}
     			/* 'Give' the semaphore to unblock the tasks. */
             	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalMutex);
 
         		xSemaphoreGive( xMutex );
 
-   			    /* Check Task B Flag	*/
-       			if( 1 )
-       			{
-       			    /* Reset Task B Flag	*/
-       			    lTask_BFlag = 0;
-
-        			/* 'Give' the semaphore to unblock the task A. */
-                	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
-       	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
-       			}
+    			/* 'Give' the semaphore to unblock the task A. */
+            	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
+   	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
         	}
         }
 	}
