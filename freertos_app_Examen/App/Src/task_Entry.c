@@ -121,7 +121,7 @@ void vTask_X_Entry( void *pvParameters )
     	// Let's see if the bridge is not at full capacity first
     	if(xSemaphoreTake( ENTRY_SEMAPHORE, portMAX_DELAY ) == pdTRUE)
         {
-    		vPrintTwoStrings(pcTaskGetName(NULL), " | Entro un auto!\r\n");
+    		vPrintTwoStrings(pcTaskGetName(NULL), " | Un auto quiere entrar\r\n");
 			/* Use the semaphore to wait for the event.  The task blocks
 			 * indefinitely meaning this function call will only return once the
 			 * semaphore has been successfully obtained - so there is no need to check
