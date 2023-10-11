@@ -89,6 +89,10 @@ xTaskHandle EntryTasks[ENTRY_TOTAL];
 xTaskHandle ExitTasks[EXIT_TOTAL];
 xTaskHandle vTask_TestHandle;
 
+// Queues
+QueueHandle_t xQueueVehicle;
+QueueHandle_t xQueueVehicleDateTime;
+
 /* Task Entry/Exit Vehicle Counter	*/
 uint32_t	lTasksCnt;
 
@@ -193,6 +197,20 @@ void appInit( void )
 	configASSERT( xCountingSemaphoreTask_A !=  NULL );
 	// Add Counting Semaphore to registry
 	vQueueAddToRegistry(xCountingSemaphoreTask_A, "xCountingSemaphoreTask_A");
+
+    /* Before a queue is used it must be explicitly created. */
+	xQueueVehicle = xQueueCreate( 10, sizeof( Vehicle ) );
+	/* Check the queues was created successfully */
+	configASSERT( xQueueVehicle != NULL );
+    /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
+    vQueueAddToRegistry( xQueueVehicle, "xQueueVehicle" );
+
+    /* Before a queue is used it must be explicitly created. */
+    xQueueVehicleDateTime = xQueueCreate( 32, sizeof( VehicleDateTime ) );
+	/* Check the queues was created successfully */
+	configASSERT( xQueueVehicleDateTime != NULL );
+    /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
+    vQueueAddToRegistry( xQueueVehicleDateTime, "xQueueVehicleDateTime" );
 
 
 

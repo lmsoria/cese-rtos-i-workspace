@@ -97,6 +97,21 @@ extern xTaskHandle vTask_A_Exit_Handle;
 extern xTaskHandle vTask_TestHandle;
 
 
+typedef struct {
+	char number[6];
+	xTaskHandle task_handle;
+} Vehicle;
+
+typedef struct {
+	Vehicle vehicle;
+	char date_time[14];
+} VehicleDateTime;
+
+// Queues
+extern QueueHandle_t xQueueVehicle;
+extern QueueHandle_t xQueueVehicleDateTime;
+
+
 
 /* Task Entry/Exit Vehicle Counter	*/
 #define lTasksCntMAX	3
