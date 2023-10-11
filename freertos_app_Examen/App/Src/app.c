@@ -79,7 +79,7 @@ xSemaphoreHandle ExitSemaphores[EXIT_TOTAL];
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to ........ */
-xSemaphoreHandle xMutexSemaphoreTask_A;
+xSemaphoreHandle xBridgeMutex;
 
 /* Counting Semaphore that controls the bridge capacity */
 xSemaphoreHandle xCountingSemaphoreTask_A;
@@ -180,11 +180,11 @@ void appInit( void )
   	}
 
     // Create Mutex
-    xMutexSemaphoreTask_A = xSemaphoreCreateMutex();
+  	xBridgeMutex = xSemaphoreCreateMutex();
     // Check the mutex was created successfully.
-    configASSERT( xMutexSemaphoreTask_A !=  NULL );
+    configASSERT( xBridgeMutex !=  NULL );
     // Add mutex to registry.
-	vQueueAddToRegistry(xMutexSemaphoreTask_A, "xMutexSemaphoreTask_A");
+	vQueueAddToRegistry(xBridgeMutex, "xBridgeMutex");
 
 
 	// Create counting semaphore

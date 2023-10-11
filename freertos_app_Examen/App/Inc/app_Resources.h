@@ -87,7 +87,7 @@
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to...*/
-extern xSemaphoreHandle xMutexSemaphoreTask_A;
+extern xSemaphoreHandle xBridgeMutex;
 
 extern xSemaphoreHandle xCountingSemaphoreTask_A;
 
