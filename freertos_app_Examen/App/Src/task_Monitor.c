@@ -50,8 +50,20 @@ static const char *pcTextForTask_Monitor_message_received = " | Message received
 /* Task Monitor thread */
 void vTask_Monitor( void *pvParameters )
 {
+	Vehicle vehicle;
+	VehicleDateTime vehicle_date_time;
+
+	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_Monitor);
+
 	while(1)
 	{
+		if(xQueueReceive( xQueueVehicle, &vehicle, portMAX_DELAY ) == pdPASS) {
+			vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_Monitor_message_received);
+			vehicle_date_time.vehicle = vehicle;
+
+			snprintf(vehicle_date_time.date_time, sizeof(vehicle_date_time.date_time)/sizeof(char), "YYYYMMDDHHMMSS");
+			xQueueSend(xQueueVehicleDateTime, (void*)&vehicle_date_time, 0);
+		}
 	}
 }
 

@@ -67,6 +67,7 @@
 #include "app_Resources.h"
 #include "task_Entry.h"
 #include "task_Exit.h"
+#include "task_Monitor.h"
 #include "task_Test.h"
 
 // ------ Macros and definitions ---------------------------------------
@@ -88,6 +89,7 @@ xSemaphoreHandle xCountingSemaphoreTask_A;
 xTaskHandle EntryTasks[ENTRY_TOTAL];
 xTaskHandle ExitTasks[EXIT_TOTAL];
 xTaskHandle vTask_TestHandle;
+xTaskHandle vTask_MonitorHandle;
 
 // Queues
 QueueHandle_t xQueueVehicle;
@@ -232,6 +234,18 @@ void appInit( void )
 					   &EXIT_TASK_DATA_ARRAY[EXIT_A],						   /* We are not using the task parameter. */
 					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
 					   &ExitTasks[EXIT_A] );		   /* We are using a variable as task handle. */
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+
+    /* Task Monitor thread at priority 1 */
+    ret = xTaskCreate( vTask_Monitor,				   /* Pointer to the function thats implement the task. */
+					   "Task Monitor",				   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   NULL,						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 1UL),	   /* This task will run at priority 1. */
+					   &vTask_MonitorHandle);		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );

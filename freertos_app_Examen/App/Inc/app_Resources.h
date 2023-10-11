@@ -98,13 +98,13 @@ extern xTaskHandle vTask_TestHandle;
 
 
 typedef struct {
-	char number[6];
+	char number[7];
 	xTaskHandle task_handle;
 } Vehicle;
 
 typedef struct {
 	Vehicle vehicle;
-	char date_time[14];
+	char date_time[30];
 } VehicleDateTime;
 
 // Queues

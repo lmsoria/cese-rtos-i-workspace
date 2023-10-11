@@ -153,7 +153,7 @@ void vTask_X_Exit( void *pvParameters )
     			/* 'Give' the semaphore to unblock the tasks. */
     			vPrintString(pcTextForTask_X_Exit_SignalMutex);
 
-    			snprintf(last_vehicle.number, 6, "%ld", counter);
+    			snprintf(last_vehicle.number, sizeof(last_vehicle.number)/sizeof(char), "%ld", counter);
     			counter++;
 
     			xQueueSend(xQueueVehicle, (void*)&last_vehicle, 0);
