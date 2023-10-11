@@ -212,8 +212,6 @@ void appInit( void )
     /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
     vQueueAddToRegistry( xQueueVehicleDateTime, "xQueueVehicleDateTime" );
 
-
-
     BaseType_t ret;
 
     /* Task A thread at priority 2 */

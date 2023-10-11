@@ -102,6 +102,12 @@ void vTask_X_Exit( void *pvParameters )
 	const xSemaphoreHandle OPPOSITE_SEMAPHORE = *DATA->opposite_semaphore;
 	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
 
+	uint32_t counter = 0;
+
+	Vehicle last_vehicle;
+
+	last_vehicle.task_handle = xTaskGetCurrentTaskHandle();
+
 
 	/* Print out the name of this task. */
 	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit );
@@ -146,6 +152,11 @@ void vTask_X_Exit( void *pvParameters )
 
     			/* 'Give' the semaphore to unblock the tasks. */
     			vPrintString(pcTextForTask_X_Exit_SignalMutex);
+
+    			snprintf(last_vehicle.number, 6, "%ld", counter);
+    			counter++;
+
+    			xQueueSend(xQueueVehicle, (void*)&last_vehicle, 0);
 
         		xSemaphoreGive( xMutexSemaphoreTask_A );
 
