@@ -95,6 +95,12 @@ static const char *pcTextForTask_A_Entry_SignalMutex	= " | Fin seccion critica. 
 /* Task X thread (Entry) */
 void vTask_X_Entry( void *pvParameters )
 {
+	EntryTaskData* const DATA = (EntryTaskData*)(pvParameters);
+
+	const xSemaphoreHandle ENTRY_SEMAPHORE = *DATA->entry_semaphore;
+	const xSemaphoreHandle OPPOSITE_SEMAPHORE = *DATA->opposite_semaphore;
+	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
+
 	/* Print out the name of this task. */
 	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry );
 
@@ -103,7 +109,7 @@ void vTask_X_Entry( void *pvParameters )
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( xBinarySemaphoreEntry_A, (portTickType) 0 );
+    xSemaphoreTake( ENTRY_SEMAPHORE, (portTickType) 0 );
 
 
     /* Init Task A & B Counter and Reset Task A Flag	*/
@@ -113,7 +119,7 @@ void vTask_X_Entry( void *pvParameters )
     {
     	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_WaitEntry_A );
     	// Let's see if the bridge is not at full capacity first
-    	if(xSemaphoreTake( xBinarySemaphoreEntry_A, portMAX_DELAY ) == pdTRUE)
+    	if(xSemaphoreTake( ENTRY_SEMAPHORE, portMAX_DELAY ) == pdTRUE)
         {
     		vPrintTwoStrings(pcTaskGetName(NULL), " | Entro un auto!\r\n");
 			/* Use the semaphore to wait for the event.  The task blocks
@@ -121,7 +127,7 @@ void vTask_X_Entry( void *pvParameters )
 			 * semaphore has been successfully obtained - so there is no need to check
 			 * the returned value. */
     		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_WaitContinue);
-			xSemaphoreTake( xCountingSemaphoreTask_A, portMAX_DELAY );
+			xSemaphoreTake( CONTINUE_SEMAPHORE, portMAX_DELAY );
 			{
 				vPrintTwoStrings(pcTaskGetName(NULL), " | Hay lugar disponible!\r\n");
 	    		/* The semaphore is created before the scheduler is started so already

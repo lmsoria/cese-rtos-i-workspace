@@ -184,7 +184,7 @@ void vTask_Test( void *pvParameters )
 			switch( eTask_TestArray[i] ) {
 	    		case Entry_A:
 	    			vPrintString( pcTextForTask_Test_SignalEntry_A );
-	    			xSemaphoreGive(xBinarySemaphoreEntry_A);
+	    			xSemaphoreGive(EntrySemaphores[ENTRY_A]);
 	    			break;
 
 	    		case Entry_B:
@@ -192,7 +192,7 @@ void vTask_Test( void *pvParameters )
 
 	    		case Exit_A:
 	    			vPrintString( pcTextForTask_Test_SignalExit_A );
-	    			xSemaphoreGive(xBinarySemaphoreExit_A);
+	    			xSemaphoreGive(ExitSemaphores[EXIT_A]);
 	    			break;
 
 	    		case Exit_B:

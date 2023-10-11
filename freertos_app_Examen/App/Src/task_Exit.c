@@ -96,25 +96,32 @@ static const char *pcTextForTask_A_Exit_SignalMutex	    = " Task A (Exit) | Fin 
 /* Task A thread (Exit) */
 void vTask_A_Exit( void *pvParameters )
 {
+	ExitTaskData* const DATA = (ExitTaskData*)(pvParameters);
+
+	const xSemaphoreHandle EXIT_SEMAPHORE = *DATA->exit_semaphore;
+	const xSemaphoreHandle OPPOSITE_SEMAPHORE = *DATA->opposite_semaphore;
+	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
+
+
 	/* Print out the name of this task. */
-	vPrintString( pcTextForTask_A_Exit );
+	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit );
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
 	 * Take the semaphore once to start with so the semaphore is empty before the
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
-    xSemaphoreTake( xBinarySemaphoreExit_A, (portTickType) 0 );
+    xSemaphoreTake( EXIT_SEMAPHORE, (portTickType) 0 );
     while( 1 )
     {
 		/* Use the semaphore to wait for the event.  The task blocks
          * indefinitely meaning this function call will only return once the
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
-    	vPrintString(pcTextForTask_A_Exit_WaitExit_A);
-        xSemaphoreTake( xBinarySemaphoreExit_A, portMAX_DELAY );
+    	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_WaitExit_A );
+        xSemaphoreTake( EXIT_SEMAPHORE, portMAX_DELAY );
         {
-        	vPrintString("Task A (Exit) | Salio un auto!\r\n");
+        	vPrintTwoStrings(pcTaskGetName(NULL), " | Salio un auto!\r\n");
         	/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
     		 *
@@ -123,19 +130,19 @@ void vTask_A_Exit( void *pvParameters )
     		 * the semaphore has been successfully obtained so there is no need to check
     		 * the return value.  If any other delay period was used then the code must
     		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-        	vPrintString(pcTextForTask_A_Exit_WaitMutex);
+        	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_WaitMutex);
         	xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
         	{
         		/* The following line will only execute once the semaphore has been
         		 * successfully obtained. */
-        		vPrintString("Task A (Exit) | Entre a la seccion critica\r\n");
+        		vPrintTwoStrings(pcTaskGetName(NULL), " | Entre a la seccion critica\r\n");
 
         		/* Update Task A & B Counter */
         		if(lTasksCnt > 0) {
         			lTasksCnt--;
         		}
 
-    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lTasksCnt);
+        		vPrintStringAndNumber(pcTextForTask_A_lTasksCnt, lTasksCnt);
 
     			/* 'Give' the semaphore to unblock the tasks. */
     			vPrintString(pcTextForTask_A_Exit_SignalMutex);
@@ -143,8 +150,8 @@ void vTask_A_Exit( void *pvParameters )
         		xSemaphoreGive( xMutexSemaphoreTask_A );
 
     			/* 'Give' the semaphore to unblock the task A. */
-        		vPrintString(pcTextForTask_A_Exit_SignalContinue);
-   	        	xSemaphoreGive( xCountingSemaphoreTask_A );
+        		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_SignalContinue);
+   	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
         	}
         }
 	}
