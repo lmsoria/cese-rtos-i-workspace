@@ -210,7 +210,7 @@ void appInit( void )
     configASSERT( ret == pdPASS );
 
     /* Task B thread at priority 2 */
-    ret = xTaskCreate( vTask_A_Exit,				   /* Pointer to the function thats implement the task. */
+    ret = xTaskCreate( vTask_X_Exit,				   /* Pointer to the function thats implement the task. */
 					   exit_to_str(EXIT_A),				   /* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
 					   &EXIT_TASK_DATA_ARRAY[EXIT_A],						   /* We are not using the task parameter. */

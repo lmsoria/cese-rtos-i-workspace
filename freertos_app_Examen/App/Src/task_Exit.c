@@ -75,16 +75,16 @@ uint32_t lTask_BCnt = 0;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-static const char *pcTextForTask_A_Exit    			    = "Task A (Exit)  - Running\r\n";
+static const char *pcTextForTask_X_Exit    			    = " - Running\r\n";
 
-static const char *pcTextForTask_A_lTasksCnt			= "Task A (Exit) | Lugares ocupados: ";
+static const char *pcTextForTask_X_lTasksCnt			= " | Lugares ocupados: ";
 
-static const char *pcTextForTask_A_Exit_WaitExit_A	    = "Task A (Exit) - Espero que salga un auto...\r\n\n";
-static const char *pcTextForTask_A_Exit_SignalContinue 	= "Task A (Exit) | Aviso que hay lugar disponible\r\n\n";
+static const char *pcTextForTask_X_Exit_WaitExit	    = " | Espero que salga un auto...\r\n\n";
+static const char *pcTextForTask_X_Exit_SignalContinue 	= " | Aviso que hay lugar disponible\r\n\n";
 
 
-static const char *pcTextForTask_A_Exit_WaitMutex	    = " Task A (Exit) | Espero que la seccion critica este libre\r\n\n";
-static const char *pcTextForTask_A_Exit_SignalMutex	    = " Task A (Exit) | Fin seccion critica. Devuelvo el Mutex\r\n\n";
+static const char *pcTextForTask_X_Exit_WaitMutex	    = " | Espero que la seccion critica este libre\r\n\n";
+static const char *pcTextForTask_X_Exit_SignalMutex	    = " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -94,7 +94,7 @@ static const char *pcTextForTask_A_Exit_SignalMutex	    = " Task A (Exit) | Fin 
 
 /*------------------------------------------------------------------*/
 /* Task A thread (Exit) */
-void vTask_A_Exit( void *pvParameters )
+void vTask_X_Exit( void *pvParameters )
 {
 	ExitTaskData* const DATA = (ExitTaskData*)(pvParameters);
 
@@ -104,7 +104,7 @@ void vTask_A_Exit( void *pvParameters )
 
 
 	/* Print out the name of this task. */
-	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit );
+	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit );
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
@@ -118,7 +118,7 @@ void vTask_A_Exit( void *pvParameters )
          * indefinitely meaning this function call will only return once the
          * semaphore has been successfully obtained - so there is no need to check
          * the returned value. */
-    	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_WaitExit_A );
+    	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit_WaitExit );
         xSemaphoreTake( EXIT_SEMAPHORE, portMAX_DELAY );
         {
         	vPrintTwoStrings(pcTaskGetName(NULL), " | Salio un auto!\r\n");
@@ -130,7 +130,7 @@ void vTask_A_Exit( void *pvParameters )
     		 * the semaphore has been successfully obtained so there is no need to check
     		 * the return value.  If any other delay period was used then the code must
     		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-        	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_WaitMutex);
+        	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit_WaitMutex);
         	xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
         	{
         		/* The following line will only execute once the semaphore has been
@@ -142,15 +142,15 @@ void vTask_A_Exit( void *pvParameters )
         			lTasksCnt--;
         		}
 
-        		vPrintStringAndNumber(pcTextForTask_A_lTasksCnt, lTasksCnt);
+        		vPrintStringAndNumber(pcTextForTask_X_lTasksCnt, lTasksCnt);
 
     			/* 'Give' the semaphore to unblock the tasks. */
-    			vPrintString(pcTextForTask_A_Exit_SignalMutex);
+    			vPrintString(pcTextForTask_X_Exit_SignalMutex);
 
         		xSemaphoreGive( xMutexSemaphoreTask_A );
 
     			/* 'Give' the semaphore to unblock the task A. */
-        		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Exit_SignalContinue);
+        		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit_SignalContinue);
    	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
         	}
         }

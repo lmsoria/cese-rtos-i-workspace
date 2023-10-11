@@ -75,15 +75,15 @@ uint32_t lTask_ACnt = 0;
 /* Define the strings that will be passed in as the Supporting Functions parameters.
  * These are defined const and off the stack to ensure they remain valid when the
  * tasks are executing. */
-static const char *pcTextForTask_A_Entry    			= " - Running\r\n";
+static const char *pcTextForTask_X_Entry    			= " - Running\r\n";
 
-static const char *pcTextForTask_A_Entry_lTasksCnt		= "\t> Lugares Ocupados: ";
+static const char *pcTextForTask_X_Entry_lTasksCnt		= "\t> Lugares Ocupados: ";
 
-static const char *pcTextForTask_A_Entry_WaitEntry_A	= " | Espero que entre un auto...\r\n\n";
-static const char *pcTextForTask_A_Entry_WaitContinue	= " | Espero que haya lugar\r\n\n";
+static const char *pcTextForTask_X_Entry_WaitEntry	    = " | Espero que entre un auto...\r\n\n";
+static const char *pcTextForTask_X_Entry_WaitContinue	= " | Espero que haya lugar\r\n\n";
 
-static const char *pcTextForTask_A_Entry_WaitMutex		= " | Espero que la seccion critica este libre\r\n\n";
-static const char *pcTextForTask_A_Entry_SignalMutex	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
+static const char *pcTextForTask_X_Entry_WaitMutex		= " | Espero que la seccion critica este libre\r\n\n";
+static const char *pcTextForTask_X_Entry_SignalMutex	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -102,7 +102,7 @@ void vTask_X_Entry( void *pvParameters )
 	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
 
 	/* Print out the name of this task. */
-	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry );
+	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry );
 
 	/* As per most tasks, this task is implemented within an infinite loop.
 	 *
@@ -117,7 +117,7 @@ void vTask_X_Entry( void *pvParameters )
 
     while( 1 )
     {
-    	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_WaitEntry_A );
+    	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_WaitEntry );
     	// Let's see if the bridge is not at full capacity first
     	if(xSemaphoreTake( ENTRY_SEMAPHORE, portMAX_DELAY ) == pdTRUE)
         {
@@ -126,7 +126,7 @@ void vTask_X_Entry( void *pvParameters )
 			 * indefinitely meaning this function call will only return once the
 			 * semaphore has been successfully obtained - so there is no need to check
 			 * the returned value. */
-    		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_WaitContinue);
+    		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_WaitContinue);
 			xSemaphoreTake( CONTINUE_SEMAPHORE, portMAX_DELAY );
 			{
 				vPrintTwoStrings(pcTaskGetName(NULL), " | Hay lugar disponible!\r\n");
@@ -138,7 +138,7 @@ void vTask_X_Entry( void *pvParameters )
 	    		 * the semaphore has been successfully obtained so there is no need to check
 	    		 * the return value.  If any other delay period was used then the code must
 	    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-				vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_WaitMutex);
+				vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_WaitMutex);
 	    		xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
 	        	{
 	    			vPrintTwoStrings(pcTaskGetName(NULL), " | Entre a la seccion critica\r\n");
@@ -146,9 +146,9 @@ void vTask_X_Entry( void *pvParameters )
 	        		 * successfully obtained. */
 	        		/* Update Task A & B Counter */
 	    			lTasksCnt++;
-	    			vPrintStringAndNumber( pcTextForTask_A_Entry_lTasksCnt, lTasksCnt);
+	    			vPrintStringAndNumber( pcTextForTask_X_Entry_lTasksCnt, lTasksCnt);
 	       			/* 'Give' the semaphore to unblock the tasks. */
-	    			vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_A_Entry_SignalMutex);
+	    			vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_SignalMutex);
 	       			xSemaphoreGive( xMutexSemaphoreTask_A );
 	        	}
 			}
