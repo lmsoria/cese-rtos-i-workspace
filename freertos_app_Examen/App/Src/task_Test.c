@@ -188,6 +188,8 @@ void vTask_Test( void *pvParameters )
 	    			break;
 
 	    		case Entry_B:
+	    			vPrintString( pcTextForTask_Test_SignalEntry_B );
+	    			xSemaphoreGive(EntrySemaphores[ENTRY_B]);
 	    			break;
 
 	    		case Exit_A:
@@ -196,6 +198,8 @@ void vTask_Test( void *pvParameters )
 	    			break;
 
 	    		case Exit_B:
+	    			vPrintString( pcTextForTask_Test_SignalExit_B );
+	    			xSemaphoreGive(ExitSemaphores[EXIT_B]);
 	    			break;
 
 		    	case Error:
