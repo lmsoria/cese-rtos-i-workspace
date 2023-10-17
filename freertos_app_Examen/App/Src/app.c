@@ -206,8 +206,24 @@ void appInit( void )
 					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
 					   &EntryTasks[ENTRY_A] );		   /* We are using a variable as task handle. */
 
+
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
+
+
+
+    /* Task A thread at priority 2 */
+    ret = xTaskCreate( vTask_X_Entry,				   /* Pointer to the function thats implement the task. */
+    			       entry_to_str(ENTRY_B),			   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   &ENTRY_TASK_DATA_ARRAY[ENTRY_B],						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &EntryTasks[ENTRY_B] );		   /* We are using a variable as task handle. */
+
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
 
     /* Task B thread at priority 2 */
     ret = xTaskCreate( vTask_X_Exit,				   /* Pointer to the function thats implement the task. */
@@ -216,6 +232,18 @@ void appInit( void )
 					   &EXIT_TASK_DATA_ARRAY[EXIT_A],						   /* We are not using the task parameter. */
 					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
 					   &ExitTasks[EXIT_A] );		   /* We are using a variable as task handle. */
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+
+    /* Task B thread at priority 2 */
+    ret = xTaskCreate( vTask_X_Exit,				   /* Pointer to the function thats implement the task. */
+					   exit_to_str(EXIT_B),				   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   &EXIT_TASK_DATA_ARRAY[EXIT_B],						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 2UL),	   /* This task will run at priority 1. */
+					   &ExitTasks[EXIT_B] );		   /* We are using a variable as task handle. */
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
