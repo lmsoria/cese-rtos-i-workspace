@@ -139,7 +139,7 @@ void vTask_X_Entry( void *pvParameters )
 	    		 * the return value.  If any other delay period was used then the code must
 	    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
 				vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_WaitMutex);
-	    		xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
+	    		xSemaphoreTake( xBridgeMutex, portMAX_DELAY );
 	        	{
 	    			vPrintTwoStrings(pcTaskGetName(NULL), " | Entre a la seccion critica\r\n");
 	        		/* The following line will only execute once the semaphore has been
@@ -149,7 +149,7 @@ void vTask_X_Entry( void *pvParameters )
 	    			vPrintStringAndNumber( pcTextForTask_X_Entry_lTasksCnt, lTasksCnt);
 	       			/* 'Give' the semaphore to unblock the tasks. */
 	    			vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Entry_SignalMutex);
-	       			xSemaphoreGive( xMutexSemaphoreTask_A );
+	       			xSemaphoreGive( xBridgeMutex );
 	        	}
 			}
         }

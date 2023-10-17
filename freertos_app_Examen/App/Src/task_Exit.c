@@ -99,7 +99,6 @@ void vTask_X_Exit( void *pvParameters )
 	ExitTaskData* const DATA = (ExitTaskData*)(pvParameters);
 
 	const xSemaphoreHandle EXIT_SEMAPHORE = *DATA->exit_semaphore;
-	const xSemaphoreHandle OPPOSITE_SEMAPHORE = *DATA->opposite_semaphore;
 	const xSemaphoreHandle CONTINUE_SEMAPHORE = *DATA->continue_semaphore;
 
 	uint32_t counter = 0;
@@ -137,7 +136,7 @@ void vTask_X_Exit( void *pvParameters )
     		 * the return value.  If any other delay period was used then the code must
     		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
         	vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit_WaitMutex);
-        	xSemaphoreTake( xMutexSemaphoreTask_A, portMAX_DELAY );
+			xSemaphoreTake(xBridgeMutex, portMAX_DELAY );
         	{
         		/* The following line will only execute once the semaphore has been
         		 * successfully obtained. */
@@ -158,7 +157,7 @@ void vTask_X_Exit( void *pvParameters )
 
     			xQueueSend(xQueueVehicle, (void*)&last_vehicle, 0);
 
-        		xSemaphoreGive( xMutexSemaphoreTask_A );
+        		xSemaphoreGive( xBridgeMutex );
 
     			/* 'Give' the semaphore to unblock the task A. */
         		vPrintTwoStrings(pcTaskGetName(NULL), pcTextForTask_X_Exit_SignalContinue);
