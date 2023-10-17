@@ -65,6 +65,7 @@
 #include "app_Resources.h"
 #include "task_A.h"
 #include "task_B.h"
+#include "task_Monitor.h"
 #include "task_Test.h"
 
 // ------ Macros and definitions ---------------------------------------
@@ -84,11 +85,14 @@ xSemaphoreHandle xMutex;
 /* Declare a variable of type xTaskHandle. This is used to reference tasks. */
 xTaskHandle EntryTasks[TOTAL_ENTRADAS];
 xTaskHandle ExitTasks[TOTAL_SALIDAS];
+xTaskHandle TaskMonitor_Handle;
 xTaskHandle vTask_TestHandle;
+
+// Queue for handling vehicle events
+QueueHandle_t VehicleQueue;
 
 /* Task A & B Counter	*/
 uint32_t	lugares_ocupados;
-
 
 EntryTaskData ENTRY_TASK_DATA_ARRAY[TOTAL_ENTRADAS] =
 {
@@ -128,6 +132,14 @@ ExitTaskData EXIT_TASK_DATA_ARRAY[TOTAL_SALIDAS] =
 	},
 };
 
+MonitorTaskData MONITOR_TASK_DATA_ARRAY[1] =
+{
+	[0] = {
+		.name = "Monitor",
+		.message_queue = &VehicleQueue,
+	},
+};
+
 // ------ internal functions declaration -------------------------------
 
 // ------ internal data definition -------------------------------------
@@ -140,7 +152,22 @@ static char exit_semaphores_names[TOTAL_SALIDAS][30] = {0};
 // ------ external data definition -------------------------------------
 
 // ------ internal functions definition --------------------------------
-static char* entry_to_str(EntryType entry) {
+
+// ------ external functions definition --------------------------------
+char* event_type_to_str(EventType event_type) {
+	 switch (event_type) {
+		case EVENT_ENTRY:
+			return "ENTRY";
+		case EVENT_EXIT:
+			return "EXIT";
+		case EVENT_ERROR:
+			return "ERROR";
+		default:
+			return "";
+	}
+}
+
+char* entry_to_str(EntryType entry) {
 	 switch (entry) {
 		case ENTRADA_A:
 			return "ENTRADA_A";
@@ -153,7 +180,7 @@ static char* entry_to_str(EntryType entry) {
 	}
 }
 
-static char* exit_to_str(ExitType exit) {
+char* exit_to_str(ExitType exit) {
 	 switch (exit) {
 		case SALIDA_A:
 			return "SALIDA_A";
@@ -165,8 +192,22 @@ static char* exit_to_str(ExitType exit) {
 			return "";
 	}
 }
-// ------ external functions definition --------------------------------
 
+char* vehicle_to_str(VehicleType vehicle_type)
+{
+	 switch (vehicle_type) {
+		case CAR:
+			return "CAR";
+		case VAN:
+			return "VAN";
+		case TRUCK:
+			return "TRUCK";
+		case MOTORCYCLE:
+			return "MOTORCYCLE";
+		default:
+			return "";
+	}
+}
 
 /*------------------------------------------------------------------*/
 /* App Initialization */
@@ -191,7 +232,8 @@ void appInit( void )
 
     /* Before a semaphore is used it must be explicitly created.
      * In this example a binary semaphore is created. */
-    vSemaphoreCreateBinary( xBinarySemaphoreContinue );
+//    vSemaphoreCreateBinary( xBinarySemaphoreContinue );
+    xBinarySemaphoreContinue = xSemaphoreCreateCounting(lTasksCntMAX, lTasksCntMAX);
 
     /* Check the semaphore was created successfully. */
 	configASSERT( xBinarySemaphoreContinue !=  NULL );
@@ -209,15 +251,35 @@ void appInit( void )
     /* Add mutex to registry. */
 	vQueueAddToRegistry(xMutex, "xMutex");
 
+
+    /* Before a queue is used it must be explicitly created. */
+	VehicleQueue = xQueueCreate( 10, sizeof( VehicleEventMsg ) );
+	/* Check the queues was created successfully */
+	configASSERT( VehicleQueue != NULL );
+    /* We want this queue to be viewable in a RTOS kernel aware debugger, so register it. */
+    vQueueAddToRegistry( VehicleQueue, "VehicleQueue" );
+
+
 	BaseType_t ret;
 
     /* Task A thread at priority 2 */
     ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
 					   entry_to_str(ENTRADA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   &ENTRY_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
+					   &ENTRY_TASK_DATA_ARRAY[ENTRADA_A],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &EntryTasks[ENTRADA_A] );				/* We are using a variable as task handle.	*/
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+    /* Task A thread at priority 2 */
+    ret = xTaskCreate( vTask_A,						/* Pointer to the function thats implement the task. */
+					   entry_to_str(ENTRADA_B),					/* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
+					   &ENTRY_TASK_DATA_ARRAY[ENTRADA_B],						/* We are not using the task parameter.		*/
+					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
+					   &EntryTasks[ENTRADA_B] );				/* We are using a variable as task handle.	*/
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
@@ -226,12 +288,35 @@ void appInit( void )
     ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
 					   exit_to_str(SALIDA_A),					/* Text name for the task. This is to facilitate debugging only. */
 					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
-					   &EXIT_TASK_DATA_ARRAY[0],						/* We are not using the task parameter.		*/
+					   &EXIT_TASK_DATA_ARRAY[SALIDA_A],						/* We are not using the task parameter.		*/
 					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
 					   &ExitTasks[SALIDA_A] );				/* We are using a variable as task handle.	*/
 
     /* Check the task was created successfully. */
     configASSERT( ret == pdPASS );
+
+    /* Task B thread at priority 2 */
+    ret = xTaskCreate( vTask_B,						/* Pointer to the function thats implement the task. */
+					   exit_to_str(SALIDA_B),					/* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. 				*/
+					   &EXIT_TASK_DATA_ARRAY[SALIDA_B],						/* We are not using the task parameter.		*/
+					   (tskIDLE_PRIORITY + 2UL),	/* This task will run at priority 1. 		*/
+					   &ExitTasks[SALIDA_B] );				/* We are using a variable as task handle.	*/
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
+    /* Task Monitor thread at priority 2 */
+    ret = xTaskCreate( vTaskMonitor,				   /* Pointer to the function thats implement the task. */
+					   "Task Monitor",				   /* Text name for the task. This is to facilitate debugging only. */
+					   (2 * configMINIMAL_STACK_SIZE), /* Stack depth in words. */
+					   &MONITOR_TASK_DATA_ARRAY[0],						   /* We are not using the task parameter. */
+					   (tskIDLE_PRIORITY + 1UL),	   /* This task will run at priority 1. */
+					   &TaskMonitor_Handle);		   /* We are using a variable as task handle. */
+
+    /* Check the task was created successfully. */
+    configASSERT( ret == pdPASS );
+
 
 	/* Task Test at priority 1, periodically excites the other tasks */
     ret = xTaskCreate( vTask_Test,					/* Pointer to the function thats implement the task. */

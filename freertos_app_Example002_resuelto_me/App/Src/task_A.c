@@ -78,13 +78,13 @@ uint32_t lTask_AFlag;
  * tasks are executing. */
 const char *pcTextForTask_A    				= " Running\r\n";
 
-const char *pcTextForTask_A_lTasksCnt		= "> Lugares ocupados:";
+const char *pcTextForTask_A_lTasksCnt		= "\t> Lugares ocupados:";
 
-const char *pcTextForTask_A_WaitEntry		= " | Wait:   Entry\r\n\n";
-const char *pcTextForTask_A_WaitContinue	= " | Wait:   Continue\r\n\n";
+const char *pcTextForTask_A_WaitEntry		= " | Espero que entre un auto...\r\n\n";
+const char *pcTextForTask_A_WaitContinue	= " | Espero que haya lugar\r\n\n";
 
-const char *pcTextForTask_A_WaitMutex    	= " | Wait:   Mutex\r\n\n";
-const char *pcTextForTask_A_SignalMutex  	= " | Signal: Mutex\r\n\n";
+const char *pcTextForTask_A_WaitMutex    	= " | Espero que la seccion critica este libre\r\n\n";
+const char *pcTextForTask_A_SignalMutex  	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -110,7 +110,7 @@ void vTask_A( void *pvParameters )
 	 * infinite loop is entered.  The semaphore was created before the scheduler
 	 * was started so before this task ran for the first time.*/
     xSemaphoreTake( ENTRY_SEMAPHORE, (portTickType) 0 );
-    xSemaphoreTake( CONTINUE_SEMAPHORE, (portTickType) 0 );
+//    xSemaphoreTake( CONTINUE_SEMAPHORE, (portTickType) 0 );
 
     /* Init Task A & B Counter and Reset Task A Flag	*/
     lugares_ocupados = 0;
@@ -125,52 +125,37 @@ void vTask_A( void *pvParameters )
     	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitEntry);
     	if(xSemaphoreTake( ENTRY_SEMAPHORE, portMAX_DELAY ) == pdTRUE)
         {
-    		/* The semaphore is created before the scheduler is started so already
-    		 * exists by the time this task executes.
-    		 *
-    		 * Attempt to take the semaphore, blocking indefinitely if the mutex is not
-    		 * available immediately.  The call to xSemaphoreTake() will only return when
-    		 * the semaphore has been successfully obtained so there is no need to check
-    		 * the return value.  If any other delay period was used then the code must
-    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
-        	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitMutex);
-    		xSemaphoreTake( xMutex, portMAX_DELAY );
-        	{
-        		/* The following line will only execute once the semaphore has been
-        		 * successfully obtained. */
-
-        		/* Update Task A & B Counter */
-    			lugares_ocupados++;
-    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lugares_ocupados);
-
-   			    /* Check Task A & B Counter	*/
-    			if( lugares_ocupados == lTasksCntMAX )
-    			{
-       			    /* Set Task A Flag	*/
-    				lTask_AFlag = 1;
-    			}
-       			/* 'Give' the semaphore to unblock the tasks. */
-       			vPrintTwoStrings(DATA->name, pcTextForTask_A_SignalMutex);
-       			xSemaphoreGive( xMutex );
-
-   			    /* Check Task A Flag	*/
-       			if( lTask_AFlag == 1 )
-       			{
-       			    /* Reset Task A Flag	*/
-       			    lTask_AFlag = 0;
-
-       		        /* Use the semaphore to wait for the event.  The task blocks
-       		         * indefinitely meaning this function call will only return once the
-       		         * semaphore has been successfully obtained - so there is no need to check
-       		         * the returned value. */
-       			    vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitContinue);
-       	        	xSemaphoreTake( CONTINUE_SEMAPHORE, portMAX_DELAY );
-       	        	{
-       	        		/* The following line will only execute once the semaphore has been
-       	        		 * successfully obtained. */
-       	        	}
-       			}
-        	}
+    		vPrintTwoStrings(DATA->name, "Entro un auto!\r\n");
+			/* Use the semaphore to wait for the event.  The task blocks
+			 * indefinitely meaning this function call will only return once the
+			 * semaphore has been successfully obtained - so there is no need to check
+			 * the returned value. */
+    		vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitContinue);
+			xSemaphoreTake( CONTINUE_SEMAPHORE, portMAX_DELAY );
+			{
+				vPrintTwoStrings(DATA->name, "Hay lugar disponible!\r\n");
+	    		/* The semaphore is created before the scheduler is started so already
+	    		 * exists by the time this task executes.
+	    		 *
+	    		 * Attempt to take the semaphore, blocking indefinitely if the mutex is not
+	    		 * available immediately.  The call to xSemaphoreTake() will only return when
+	    		 * the semaphore has been successfully obtained so there is no need to check
+	    		 * the return value.  If any other delay period was used then the code must
+	    		 * check that xSemaphoreTake() returns pdTRUE before accessing the resource. */
+	        	vPrintTwoStrings(DATA->name, pcTextForTask_A_WaitMutex);
+	    		xSemaphoreTake( xMutex, portMAX_DELAY );
+	        	{
+	    			vPrintTwoStrings(DATA->name, "Entre a la seccion critica\r\n");
+	        		/* The following line will only execute once the semaphore has been
+	        		 * successfully obtained. */
+	        		/* Update Task A & B Counter */
+	    			lugares_ocupados++;
+	    			vPrintStringAndNumber( pcTextForTask_A_lTasksCnt, lugares_ocupados);
+	       			/* 'Give' the semaphore to unblock the tasks. */
+	       			vPrintTwoStrings(DATA->name, pcTextForTask_A_SignalMutex);
+	       			xSemaphoreGive( xMutex );
+	        	}
+			}
         }
 	}
 }

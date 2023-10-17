@@ -78,13 +78,13 @@ uint32_t lTask_BFlag;
  * tasks are executing. */
 const char *pcTextForTask_B    					= " Running\r\n";
 
-const char *pcTextForTask_B_lTasksCnt			= "> Lugares ocupados:";
+const char *pcTextForTask_B_lTasksCnt			= "\t>Lugares ocupados:";
 
-const char *pcTextForTask_B_WaitExit			= " | Wait:   Exit\r\n\n";
-const char *pcTextForTask_B_SignalContinue   	= " | Signal: Continue\r\n\n";
+const char *pcTextForTask_B_WaitExit			= " | Espero que salga un auto...\r\n\n";
+const char *pcTextForTask_B_SignalContinue   	= " | Aviso que hay lugar disponible\r\n\n";
 
-const char *pcTextForTask_B_WaitMutex        	= " | Wait:   Mutex\r\n\n";
-const char *pcTextForTask_B_SignalMutex      	= " | Signal: Mutex\r\n\n";
+const char *pcTextForTask_B_WaitMutex        	= " | Espero que la seccion critica este libre\r\n\n";
+const char *pcTextForTask_B_SignalMutex      	= " | Fin seccion critica. Devuelvo el Mutex\r\n\n";
 
 // ------ external data definition -------------------------------------
 
@@ -122,6 +122,7 @@ void vTask_B( void *pvParameters )
 		vPrintTwoStrings(DATA->name, pcTextForTask_B_WaitExit);
         xSemaphoreTake( EXIT_SEMAPHORE, portMAX_DELAY );
         {
+        	vPrintTwoStrings(DATA->name, "Salio un auto!\r\n");
         	/* The semaphore is created before the scheduler is started so already
     		 * exists by the time this task executes.
     		 *
@@ -135,32 +136,23 @@ void vTask_B( void *pvParameters )
         	{
         		/* The following line will only execute once the semaphore has been
         		 * successfully obtained. */
+        		vPrintTwoStrings(DATA->name, "Entre a la seccion critica\r\n");
 
         		/* Update Task A & B Counter */
-        		lugares_ocupados--;
+        		if(lugares_ocupados > 0) {
+        			lugares_ocupados--;
+        		}
+
     			vPrintStringAndNumber( pcTextForTask_B_lTasksCnt, lugares_ocupados);
 
-   			    /* Check Task A & B Counter	*/
-    			if( lugares_ocupados == (lTasksCntMAX - 1) )
-    			{
-       			    /* Set Task B Flag	*/
-    				lTask_BFlag = 1;
-    			}
     			/* 'Give' the semaphore to unblock the tasks. */
             	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalMutex);
 
         		xSemaphoreGive( xMutex );
 
-   			    /* Check Task B Flag	*/
-       			if( lTask_BFlag == 1 )
-       			{
-       			    /* Reset Task B Flag	*/
-       			    lTask_BFlag = 0;
-
-        			/* 'Give' the semaphore to unblock the task A. */
-                	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
-       	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
-       			}
+    			/* 'Give' the semaphore to unblock the task A. */
+            	vPrintTwoStrings(DATA->name, pcTextForTask_B_SignalContinue);
+   	        	xSemaphoreGive( CONTINUE_SEMAPHORE );
         	}
         }
 	}
