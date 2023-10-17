@@ -55,15 +55,39 @@
 
 // ------ typedef ------------------------------------------------------
 
+ typedef enum {
+	 ENTRY_A  = 0,
+	 ENTRY_B,
+	 ENTRY_TOTAL // Keep this value always at the bottom!
+ } EntryType;
+
+ typedef enum {
+	 EXIT_A  = 0,
+	 EXIT_B,
+	 EXIT_TOTAL // Keep this value always at the bottom!
+ } ExitType;
+
+ typedef struct {
+	 xSemaphoreHandle* entry_semaphore;
+	 xSemaphoreHandle* opposite_semaphore;
+	 xSemaphoreHandle* continue_semaphore;
+ } EntryTaskData;
+
+ typedef struct {
+	 xSemaphoreHandle* exit_semaphore;
+	 xSemaphoreHandle* opposite_semaphore;
+	 xSemaphoreHandle* continue_semaphore;
+ } ExitTaskData;
+
 // ------ external data declaration ------------------------------------
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * semaphore that is used to synchronize a task with other task. */
-extern xSemaphoreHandle xBinarySemaphoreEntry_A;
-extern xSemaphoreHandle xBinarySemaphoreExit_A;
+ extern xSemaphoreHandle EntrySemaphores[ENTRY_TOTAL];
+ extern xSemaphoreHandle ExitSemaphores[EXIT_TOTAL];
 
 /* Declare a variable of type xSemaphoreHandle.  This is used to reference the
  * mutex type semaphore that is used to ensure mutual exclusive access to...*/
-extern xSemaphoreHandle xMutexSemaphoreTask_A;
+extern xSemaphoreHandle xBridgeMutex;
 
 extern xSemaphoreHandle xCountingSemaphoreTask_A;
 
@@ -73,12 +97,31 @@ extern xTaskHandle vTask_A_Exit_Handle;
 extern xTaskHandle vTask_TestHandle;
 
 
+typedef struct {
+	char number[7];
+	xTaskHandle task_handle;
+} Vehicle;
+
+typedef struct {
+	Vehicle vehicle;
+	char date_time[30];
+} VehicleDateTime;
+
+// Queues
+extern QueueHandle_t xQueueVehicle;
+extern QueueHandle_t xQueueVehicleDateTime;
+
+
 
 /* Task Entry/Exit Vehicle Counter	*/
 #define lTasksCntMAX	3
 extern uint32_t	lTasksCnt;
 
 // ------ external functions declaration -------------------------------
+
+char* entry_to_str(EntryType entry);
+
+char* exit_to_str(ExitType exit);
 
 #ifdef __cplusplus
 }

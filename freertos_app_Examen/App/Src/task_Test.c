@@ -98,7 +98,7 @@ const eTask_Test_t eTask_TestArray[] = { Error, Exit_B+1, Exit_B+2 };
 
 #if( TEST_X == 1 )
 /* Array of events to excite tasks */
-const eTask_Test_t eTask_TestArray[] = { Entry_A, Entry_A, Entry_A, Entry_A, Exit_A, Exit_A, Exit_A, Exit_A };
+const eTask_Test_t eTask_TestArray[] = { Exit_A, Exit_A, Exit_A, Entry_A, Exit_A, Exit_A, Exit_A, Exit_A };
 #endif
 
 #if( TEST_X == 2 )
@@ -184,18 +184,22 @@ void vTask_Test( void *pvParameters )
 			switch( eTask_TestArray[i] ) {
 	    		case Entry_A:
 	    			vPrintString( pcTextForTask_Test_SignalEntry_A );
-	    			xSemaphoreGive(xBinarySemaphoreEntry_A);
+	    			xSemaphoreGive(EntrySemaphores[ENTRY_A]);
 	    			break;
 
 	    		case Entry_B:
+	    			vPrintString( pcTextForTask_Test_SignalEntry_B );
+	    			xSemaphoreGive(EntrySemaphores[ENTRY_B]);
 	    			break;
 
 	    		case Exit_A:
 	    			vPrintString( pcTextForTask_Test_SignalExit_A );
-	    			xSemaphoreGive(xBinarySemaphoreExit_A);
+	    			xSemaphoreGive(ExitSemaphores[EXIT_A]);
 	    			break;
 
 	    		case Exit_B:
+	    			vPrintString( pcTextForTask_Test_SignalExit_B );
+	    			xSemaphoreGive(ExitSemaphores[EXIT_B]);
 	    			break;
 
 		    	case Error:

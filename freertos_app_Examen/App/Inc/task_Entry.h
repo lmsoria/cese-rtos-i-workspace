@@ -59,7 +59,7 @@
 
  // ------ external functions declaration -------------------------------
 
-void vTask_A_Entry( void *pvParameters );
+void vTask_X_Entry( void *pvParameters );
 
 #ifdef __cplusplus
 }
